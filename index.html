@@ -5,13 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>VJ STUDIO</title>
 <style>
+  @font-face{font-family:'Bebas Neue';src:url('fonts/bebas-neue.woff2') format('woff2');font-weight:400;font-display:swap;}
+  @font-face{font-family:'Inter';src:url('fonts/inter-400.woff2') format('woff2');font-weight:400;font-display:swap;}
+  @font-face{font-family:'Inter';src:url('fonts/inter-600.woff2') format('woff2');font-weight:600;font-display:swap;}
   :root{
-    --bg:#161619; --panel:#222227; --line:#34343c; --line2:#46464f;
-    --ink:#eaeaec; --dim:#9696a0; --faint:#5c5c66;
-    --accent:#ff8a3d;
-    --cyan:#22d3ee; --amber:#f59e0b; --green:#34d399; --fuchsia:#e879f9; --red:#f87171;
-    --mono:'SF Mono',ui-monospace,Menlo,Consolas,monospace;
-    --sans:-apple-system,'Hiragino Sans','Helvetica Neue',sans-serif;
+    --bg:#0a0a0a; --panel:#131214; --panel2:#1a1a1d; --line:#2c2a2e; --line2:#3a383e;
+    --ink:#fafaf8; --dim:#a8a8a0; --faint:#5a5a55;
+    --cyan:#7bc5e8; --amber:#f5c878; --green:#a8e878; --fuchsia:#c186c8; --red:#e88a8a;
+    --bebas:'Bebas Neue',Impact,sans-serif;
+    --sans:'Inter',-apple-system,'Hiragino Sans',sans-serif;
+    --mono:'SF Mono',ui-monospace,Menlo,monospace;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:var(--sans);
@@ -19,97 +22,142 @@
 
   /* ===================== CONTROL ===================== */
   #control{display:flex;flex-direction:column;height:100%;}
-  header{display:flex;align-items:center;gap:14px;padding:10px 16px;border-bottom:1px solid var(--line);
+
+  /* header = transport bar */
+  header{display:flex;align-items:center;gap:16px;padding:9px 16px;border-bottom:0.5px solid var(--line);
     background:var(--panel);flex-wrap:wrap;}
-  .brand{font-family:var(--mono);font-weight:700;letter-spacing:3px;font-size:18px;}
+  .brand{font-family:var(--bebas);letter-spacing:0.14em;font-size:25px;line-height:1;}
   .brand .dot{color:var(--cyan);}
   .spacer{flex:1;}
-  .grp{display:flex;align-items:center;gap:6px;}
-  .lab{font-family:var(--mono);font-size:10px;letter-spacing:1px;color:var(--dim);text-transform:uppercase;}
+  .grp{display:flex;align-items:center;gap:8px;}
+  .lab{font-family:var(--bebas);font-size:14px;letter-spacing:0.1em;color:var(--dim);text-transform:uppercase;}
 
-  button{font-family:var(--mono);font-size:11px;letter-spacing:1px;color:var(--ink);
-    background:transparent;border:1px solid var(--line2);padding:7px 12px;cursor:pointer;
-    text-transform:uppercase;transition:all .12s;border-radius:0;}
+  button{font-family:var(--bebas);font-size:15px;letter-spacing:0.08em;color:var(--ink);
+    background:transparent;border:0.5px solid var(--line2);padding:7px 14px;cursor:pointer;
+    text-transform:uppercase;transition:all .12s;border-radius:4px;line-height:1;}
   button:hover{border-color:var(--ink);}
-  button.on{border-color:var(--cyan);color:var(--cyan);box-shadow:inset 0 0 0 1px var(--cyan);}
-  button.warn{border-color:var(--line2);}
+  button.on{border-color:var(--cyan);background:rgba(123,197,232,0.16);color:var(--ink);}
   button.warn:hover{border-color:var(--amber);color:var(--amber);}
   button.danger:hover{border-color:var(--red);color:var(--red);}
-  button.go{border-color:var(--green);color:var(--green);}
-  button.go:hover{box-shadow:inset 0 0 0 1px var(--green);}
+  button.go{border-color:rgba(168,232,120,0.5);}
+  button.go:hover{border-color:var(--green);background:rgba(168,232,120,0.12);}
 
-  .toggle{display:flex;border:1px solid var(--line2);}
-  .toggle button{border:0;border-right:1px solid var(--line2);}
+  .toggle{display:flex;border:0.5px solid var(--line2);border-radius:4px;overflow:hidden;}
+  .toggle button{border:0;border-right:0.5px solid var(--line2);border-radius:0;}
   .toggle button:last-child{border-right:0;}
 
-  /* preset palette */
-  .palette{display:flex;gap:8px;align-items:center;}
-  .preset{width:64px;height:42px;border:1px solid var(--line2);display:flex;align-items:center;
-    justify-content:center;font-family:var(--mono);font-size:9px;letter-spacing:1px;cursor:grab;
-    text-align:center;line-height:1.2;}
-  .preset:active{cursor:grabbing;}
-  .preset.white{background:repeating-linear-gradient(45deg,#fff,#fff 4px,#e0e0e0 4px,#e0e0e0 8px);color:#000;}
-  .preset.black{background:repeating-linear-gradient(45deg,#000,#000 4px,#1c1c1c 4px,#1c1c1c 8px);color:#fff;border-color:var(--line2);}
+  /* ===== TABS（バンク切替） ===== */
+  #tabbar{display:flex;align-items:center;gap:8px;padding:6px 16px;border-bottom:0.5px solid var(--line);background:var(--bg);overflow-x:auto;}
+  .tabs{display:flex;gap:5px;}
+  .tab{font-family:var(--bebas);font-size:15px;letter-spacing:0.06em;padding:5px 14px;border:0.5px solid var(--line2);
+    border-radius:4px;cursor:pointer;color:var(--dim);white-space:nowrap;transition:all .1s;display:inline-flex;align-items:center;gap:7px;}
+  .tabx{color:var(--faint);font-size:14px;line-height:1;}
+  .tabx:hover{color:var(--red);}
+  .tab:hover{border-color:var(--ink);}
+  .tab.active{border-color:var(--cyan);background:rgba(123,197,232,0.16);color:var(--ink);}
+  #addBank{flex:0 0 auto;font-size:14px;padding:5px 12px;}
 
-  /* keyboard */
-  #stage{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;
-    padding:18px;gap:10px;overflow:auto;}
-  #keyboard{display:flex;flex-direction:column;gap:8px;width:100%;max-width:1500px;}
-  .krow{display:flex;gap:8px;justify-content:center;}
-  .key{position:relative;flex:1 1 0;height:clamp(80px,13vh,156px);min-width:0;border:1px solid var(--line);
-    background:#1c1c21;display:flex;align-items:flex-end;justify-content:flex-start;
-    overflow:hidden;cursor:pointer;transition:border-color .1s,transform .05s;}
-  .key:hover{border-color:var(--line2);}
-  .key.wide{flex:2.4 1 0;}
-  .key.wider{flex:0 0 clamp(150px,16vw,260px);}
-  .krow-bottom{height:clamp(140px,22vh,260px);align-items:stretch;margin-top:6px;gap:10px;}
-  .krow-bottom .key{height:auto;}
-  .key.sel{border-color:var(--cyan);box-shadow:inset 0 0 0 1px var(--cyan);}
-  .key.flash{border-color:#fff;box-shadow:inset 0 0 0 2px #fff;transform:scale(.97);}
-  .key.special{background:#0c0c0c;border-style:dashed;border-color:var(--line2);cursor:default;}
-  .key.dragover{border-color:var(--green);box-shadow:inset 0 0 0 2px var(--green);}
-  .key .thumb{position:absolute;inset:0;background-size:cover;background-position:center;opacity:.92;}
-  .key.strobe-white .thumb{background:repeating-linear-gradient(45deg,#fff,#fff 6px,#ddd 6px,#ddd 12px);}
-  .key.strobe-black .thumb{background:repeating-linear-gradient(45deg,#000,#000 6px,#222 6px,#222 12px);}
-  .key .klabel{position:relative;z-index:2;font-family:var(--mono);font-weight:700;font-size:13px;
-    padding:3px 6px;color:#fff;text-shadow:0 1px 3px #000,0 0 2px #000;letter-spacing:1px;}
-  .key.special .klabel{color:var(--dim);text-shadow:none;font-size:11px;letter-spacing:0;}
-  .key .name{position:absolute;left:0;right:0;bottom:0;z-index:2;font-family:var(--mono);font-size:9px;
-    padding:2px 5px;background:linear-gradient(transparent,rgba(0,0,0,.85));color:#e8e8e8;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .key .badge{position:absolute;top:3px;right:3px;z-index:3;font-family:var(--mono);font-size:11px;
-    width:20px;height:20px;display:flex;align-items:center;justify-content:center;border:1px solid;
-    background:rgba(0,0,0,.7);cursor:pointer;}
-  .key .badge.loop{color:var(--green);border-color:var(--green);}
-  .key .badge.once{color:var(--dim);border-color:var(--faint);}
-  .key .badge.strobe{color:var(--cyan);border-color:var(--cyan);font-size:9px;cursor:default;}
-  .key .del{position:absolute;top:3px;left:3px;z-index:3;font-family:var(--mono);font-size:11px;
-    width:20px;height:20px;display:none;align-items:center;justify-content:center;
-    border:1px solid var(--red);color:var(--red);background:rgba(0,0,0,.7);cursor:pointer;}
-  .key:hover .del{display:flex;}
+  /* ===== TOP ZONE: info | preview(16:9) | sources ===== */
+  #topzone{display:flex;gap:14px;padding:10px 16px 0;height:clamp(200px,31vh,400px);flex:0 0 auto;justify-content:flex-start;align-items:stretch;}
+  #info{flex:0 0 190px;border:0.5px solid var(--line);background:var(--panel);border-radius:4px;padding:12px;display:flex;flex-direction:column;gap:12px;}
+  .info-row{display:flex;flex-direction:column;gap:2px;}
+  .info-lab{font-family:var(--bebas);font-size:12px;letter-spacing:0.12em;color:var(--faint);}
+  #nowKey{font-family:var(--bebas);font-size:30px;color:var(--cyan);line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  #nowState{font-family:var(--bebas);font-size:16px;color:var(--dim);letter-spacing:0.06em;}
+  .tap{margin-top:auto;display:flex;flex-direction:column;gap:6px;}
+  #tapBtn{width:100%;}
+  #bpmVal{font-family:var(--mono);font-size:12px;color:var(--ink);text-align:center;}
 
-  /* selection / detail panel */
-  #detail{display:flex;align-items:center;gap:14px;padding:9px 16px;border-top:1px solid var(--line);
-    background:var(--panel);min-height:52px;font-size:12px;flex-wrap:wrap;}
-  #detail .none{color:var(--faint);font-family:var(--mono);font-size:11px;letter-spacing:1px;}
-  #detail .selname{font-family:var(--mono);color:var(--cyan);font-size:12px;}
-  .slider{display:flex;align-items:center;gap:8px;}
-  input[type=range]{width:140px;accent-color:var(--cyan);}
-  .val{font-family:var(--mono);font-size:11px;color:var(--ink);min-width:54px;}
-
-  .hint{font-family:var(--mono);font-size:10px;color:var(--faint);letter-spacing:.5px;}
-  #status{font-family:var(--mono);font-size:10px;letter-spacing:1px;}
-  #status.live{color:var(--green);}
-  #status.off{color:var(--amber);}
-
-  /* ===== PREVIEW（control内・出力ミラー） ===== */
-  #preview{position:relative;flex:1 1 0;min-width:0;border:1px solid var(--line2);background:#000;display:flex;flex-direction:column;}
-  #preview .pvbar{display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:9px;letter-spacing:1px;color:var(--dim);padding:3px 7px;background:#0c0c0c;border-bottom:1px solid var(--line);}
-  #preview #pvstate{color:var(--faint);font-size:8px;}
+  #preview{position:relative;flex:0 0 auto;aspect-ratio:16/9;height:100%;border:0.5px solid var(--line2);background:#000;
+    display:flex;flex-direction:column;border-radius:4px;overflow:hidden;}
+  #preview .pvbar{display:flex;justify-content:space-between;align-items:center;font-family:var(--bebas);
+    font-size:13px;letter-spacing:0.1em;color:var(--dim);padding:4px 10px;background:var(--panel);border-bottom:0.5px solid var(--line);}
+  #preview #pvstate{color:var(--faint);font-size:9px;}
   #preview.playing #pvstate{color:var(--green);}
   #pvwrap{position:relative;flex:1 1 0;width:100%;background:#000;overflow:hidden;}
   #pvwrap video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000;opacity:0;transition:opacity .6s linear;}
   #pvStrobe{position:absolute;inset:0;opacity:0;background:#fff;pointer-events:none;}
+  #pvFx{position:absolute;inset:0;pointer-events:none;}
+
+  #sources{flex:0 0 236px;margin-left:auto;border:0.5px solid var(--line);background:var(--panel);border-radius:4px;
+    padding:12px;display:flex;flex-direction:column;gap:10px;overflow-y:auto;}
+  .src-title{font-family:var(--bebas);font-size:17px;letter-spacing:0.14em;color:var(--cyan);}
+  .palette{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .preset{height:62px;background:var(--panel2);border:0.5px solid var(--line2);border-radius:5px;display:flex;
+    flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:grab;transition:all .12s;}
+  .preset:hover{border-color:var(--cyan);background:#1d1d22;}
+  .preset:active{cursor:grabbing;transform:scale(.97);}
+  .fxic{width:25px;height:25px;color:var(--dim);transition:color .12s;}
+  .fxic.dark{color:var(--faint);}
+  .preset:hover .fxic{color:var(--cyan);}
+  .preset span{font-family:var(--bebas);font-size:13px;letter-spacing:0.08em;color:var(--dim);transition:color .12s;}
+  .preset:hover span{color:var(--ink);}
+  .src-set{display:flex;align-items:center;gap:6px;}
+  .src-set .lab{font-family:var(--bebas);font-size:12px;letter-spacing:0.08em;color:var(--dim);min-width:30px;}
+  .src-set input[type=range]{width:80px;}
+  .seg{display:flex;border:0.5px solid var(--line2);border-radius:3px;overflow:hidden;}
+  .seg button{border:0;border-right:0.5px solid var(--line2);border-radius:0;padding:4px 9px;font-size:13px;}
+  .seg button:last-child{border-right:0;}
+  .seg button.on{background:rgba(123,197,232,0.2);color:var(--cyan);}
+
+  /* ===== KEYBOARD = clip grid（Mac配置・キー大きさ統一） ===== */
+  #stage{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:8px 12px;overflow:auto;}
+  #keyboard{--kw:max(54px,calc((100vw - 110px) / 15.7));display:flex;flex-direction:column;gap:7px;align-items:flex-start;width:fit-content;margin:0 auto;}
+  .krow{display:flex;gap:7px;justify-content:flex-start;}
+  .key{position:relative;flex:0 0 var(--kw);width:var(--kw);height:calc(var(--kw)*1.0);min-width:0;border:0.5px solid var(--line2);
+    background:var(--panel2);border-radius:4px;display:flex;align-items:center;justify-content:center;
+    overflow:hidden;cursor:pointer;transition:border-color .1s,transform .05s,box-shadow .1s;}
+  .key:hover{border-color:var(--dim);}
+  /* Mac風 修飾キー（飾り・スタッガードのため） */
+  .key.k-esc{flex-basis:calc(var(--kw)*1.3);width:auto;}
+  .key.k-tab{flex-basis:calc(var(--kw)*1.5);width:auto;}
+  .key.k-caps{flex-basis:calc(var(--kw)*1.8);width:auto;}
+  .key.k-shift{flex-basis:calc(var(--kw)*2.3);width:auto;}
+  .key.k-del{flex-basis:calc(var(--kw)*1.4);width:auto;}
+  .key.k-ret{flex-basis:calc(var(--kw)*1.8);width:auto;}
+  .key.wider{flex-basis:calc(var(--kw)*6.5);width:auto;margin-left:calc(var(--kw)*3.4);}
+  .key.sel{border-color:var(--cyan);box-shadow:inset 0 0 0 1px var(--cyan);}
+  .key.flash{border-color:#fff;box-shadow:inset 0 0 0 2px #fff;transform:scale(.96);}
+  .key.special{background:transparent;border-style:dashed;border-color:var(--line);cursor:default;}
+  .key.dragover{border-color:var(--green);box-shadow:inset 0 0 0 2px var(--green);}
+  .key .thumb{position:absolute;inset:0;background-size:cover;background-position:center;}
+  .key.strobe-white .thumb,.key.strobe-black .thumb,.key.fx-chase .thumb,.key.fx-glitch .thumb,.key.fx-zoom .thumb{
+    background:#16161a;display:flex;align-items:center;justify-content:center;}
+  .key .thumb .fxic{width:42%;height:42%;color:var(--cyan);}
+  .key.strobe-black .thumb .fxic{color:var(--dim);}
+  /* キー文字：空きキーは中央に大きく（Bebas Neue） */
+  .key .klabel{position:relative;z-index:2;font-family:var(--bebas);font-size:clamp(24px,3.4vw,46px);
+    letter-spacing:0.04em;color:var(--ink);line-height:1;}
+  .key.special .klabel{font-size:clamp(13px,1.5vw,19px);color:var(--dim);letter-spacing:0.05em;}
+  /* 割当済みキーは隅に小さく（サムネを邪魔しない） */
+  .key.filled .klabel{position:absolute;top:3px;left:7px;z-index:3;font-size:clamp(20px,2.4vw,32px);
+    color:#fff;text-shadow:0 1px 4px #000,0 0 3px #000;}
+  .key .name{position:absolute;left:0;right:0;bottom:0;z-index:2;font-family:var(--sans);font-size:10px;
+    padding:3px 6px;background:linear-gradient(transparent,rgba(0,0,0,.88));color:#e8e8e8;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .key .badge{position:absolute;top:4px;right:4px;z-index:3;font-family:var(--mono);font-size:12px;
+    width:22px;height:22px;display:flex;align-items:center;justify-content:center;border:0.5px solid;
+    border-radius:3px;background:rgba(0,0,0,.7);cursor:pointer;}
+  .key .badge.loop{color:var(--green);border-color:var(--green);}
+  .key .badge.once{color:var(--dim);border-color:var(--faint);}
+  .key .badge.strobe{color:var(--cyan);border-color:var(--cyan);font-size:10px;cursor:default;}
+  .key .del{position:absolute;bottom:4px;right:4px;z-index:3;font-family:var(--mono);font-size:12px;
+    width:22px;height:22px;display:none;align-items:center;justify-content:center;
+    border:0.5px solid var(--red);color:var(--red);border-radius:3px;background:rgba(0,0,0,.7);cursor:pointer;}
+  .key:hover .del{display:flex;}
+
+  /* detail bar */
+  #detail{display:flex;align-items:center;gap:14px;padding:9px 16px;border-top:0.5px solid var(--line);
+    background:var(--panel);min-height:50px;font-size:12px;flex-wrap:wrap;flex:0 0 auto;}
+  #detail .none{color:var(--faint);font-family:var(--sans);font-size:11px;}
+  #detail .selname{font-family:var(--bebas);font-size:17px;letter-spacing:0.06em;color:var(--cyan);}
+  .slider{display:flex;align-items:center;gap:8px;}
+  input[type=range]{width:130px;accent-color:var(--cyan);}
+  .val{font-family:var(--mono);font-size:11px;color:var(--ink);min-width:52px;}
+  .hint{font-family:var(--sans);font-size:11px;color:var(--faint);}
+  #status{font-family:var(--bebas);font-size:14px;letter-spacing:0.1em;}
+  #status.live{color:var(--green);}
+  #status.off{color:var(--amber);}
 
   /* ===================== OUTPUT ===================== */
   #output{position:fixed;inset:0;background:#000;overflow:hidden;}
@@ -117,7 +165,7 @@
     opacity:0;transition:opacity .6s linear;}
   #strobe{position:absolute;inset:0;opacity:0;pointer-events:none;background:#fff;}
   #outhint{position:absolute;left:0;right:0;bottom:0;padding:10px;text-align:center;
-    font-family:var(--mono);font-size:11px;color:#444;letter-spacing:1px;z-index:10;}
+    font-family:var(--bebas);font-size:14px;color:#444;letter-spacing:0.1em;z-index:10;}
   #fsbtn{position:absolute;top:12px;right:12px;z-index:10;}
   #output.playing #outhint, #output.playing #fsbtn{display:none;}
 </style>
@@ -126,20 +174,11 @@
 
 <!-- ===================== CONTROL VIEW ===================== -->
 <div id="control" style="display:none">
-  <div id="preview" title="出力中の内容（手元プレビュー）">
-    <div class="pvbar"><span>PREVIEW / 出力中</span><span id="pvstate">&#9679;</span></div>
-    <div id="pvwrap">
-      <video id="pvA" muted playsinline></video>
-      <video id="pvB" muted playsinline></video>
-      <div id="pvStrobe"></div>
-    </div>
-  </div>
   <header>
     <span class="brand">VJ<span class="dot">.</span>STUDIO</span>
 
     <div class="grp">
-      <span class="lab">出力</span>
-      <button id="openOut" class="go">出力画面を開く</button>
+      <button id="openOut" class="go">出力を開く</button>
       <span id="status" class="off">OUTPUT OFF</span>
     </div>
 
@@ -152,7 +191,7 @@
     </div>
 
     <div class="grp slider">
-      <span class="lab">X-FADE 秒</span>
+      <span class="lab">X-FADE</span>
       <input type="range" id="xfadeSec" min="0.2" max="4" step="0.1" value="0.6">
       <span class="val" id="xfadeVal">0.6s</span>
     </div>
@@ -160,29 +199,61 @@
     <span class="spacer"></span>
 
     <div class="grp slider">
-      <span class="lab">FADE OUT 秒</span>
+      <span class="lab">FADE</span>
       <input type="range" id="foSec" min="0.2" max="6" step="0.1" value="1.5">
       <span class="val" id="foVal">1.5s</span>
     </div>
     <button id="fadeOutBtn" class="warn">FADE OUT (ESC)</button>
 
-    <div class="grp">
-      <span class="lab">プリセット</span>
-      <div class="palette">
-        <div class="preset white" draggable="true" data-preset="strobe-white">白<br>STROBE</div>
-        <div class="preset black" draggable="true" data-preset="strobe-black">黒<br>STROBE</div>
-      </div>
-    </div>
-
     <button id="loadSet" class="go" title="前回組んだ素材を読み込んで再生できる状態にします">セット読込</button>
   </header>
+
+  <div id="tabbar">
+    <div class="tabs" id="tabs"></div>
+    <button id="addBank" title="新しいタブ（バンク）を追加">+ タブ</button>
+  </div>
+
+  <div id="topzone">
+    <div id="info">
+      <div class="info-row"><span class="info-lab">NOW</span><span id="nowKey">—</span></div>
+      <div class="info-row"><span class="info-lab">STATE</span><span id="nowState">READY</span></div>
+      <div class="tap">
+        <button id="tapBtn">TAP TEMPO</button>
+        <span id="bpmVal">— BPM</span>
+      </div>
+    </div>
+    <div id="preview" title="出力中の内容（手元プレビュー）">
+      <div class="pvbar"><span>PREVIEW / 出力中の映像</span><span id="pvstate">&#9679;</span></div>
+      <div id="pvwrap">
+        <video id="pvA" muted playsinline></video>
+        <video id="pvB" muted playsinline></video>
+        <div id="pvStrobe"></div>
+        <div id="pvFx"></div>
+      </div>
+    </div>
+    <div id="sources">
+      <div class="src-title">EFFECTS</div>
+      <div class="palette">
+        <div class="preset" draggable="true" data-preset="strobe-white"><svg class="fxic" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-6z"/></svg><span>STROBE 白</span></div>
+        <div class="preset" draggable="true" data-preset="strobe-black"><svg class="fxic dark" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-6z"/></svg><span>STROBE 黒</span></div>
+      </div>
+      <div class="src-set"><span class="lab">速さ</span><input type="range" id="srcSpeed" min="20" max="500" step="5" value="80"><span class="val" id="srcSpeedV">80ms</span></div>
+      <div class="palette">
+        <div class="preset" draggable="true" data-preset="chase"><svg class="fxic" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="8" height="8"/><rect x="13" y="3" width="8" height="8" opacity=".3"/><rect x="3" y="13" width="8" height="8" opacity=".3"/><rect x="13" y="13" width="8" height="8" opacity=".3"/></svg><span>CHASE</span></div>
+        <div class="preset" draggable="true" data-preset="glitch"><svg class="fxic" viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="5" width="14" height="3"/><rect x="7" y="11" width="15" height="3"/><rect x="4" y="17" width="11" height="3"/></svg><span>GLITCH</span></div>
+        <div class="preset" draggable="true" data-preset="zoom"><svg class="fxic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="7.5"/><circle cx="12" cy="12" r="12"/></svg><span>ZOOM</span></div>
+      </div>
+      <div class="src-set"><span class="lab">分割</span><div class="seg" id="srcDiv"><button data-d="2">2</button><button data-d="4" class="on">4</button><button data-d="9">9</button></div></div>
+      <div class="src-set"><span class="lab">方向</span><div class="seg" id="srcChaseDir"><button data-dir="square" class="on">四角</button><button data-dir="v">縦</button><button data-dir="h">横</button></div></div>
+    </div>
+  </div>
 
   <div id="stage">
     <div id="keyboard"></div>
   </div>
 
   <div id="detail">
-    <span class="none" id="detailNone">キーをクリックすると、ここでループや間隔を設定できます。&nbsp; / &nbsp;ハードディスクから動画をキーへドラッグ&ドロップで割り当て。</span>
+    <span class="none" id="detailNone">キーをクリックで設定。動画はHDDから、ストロボは右上SOURCESからキーへドラッグ&ドロップ。</span>
   </div>
 </div>
 
@@ -191,6 +262,7 @@
   <video id="vA" playsinline></video>
   <video id="vB" playsinline></video>
   <div id="strobe"></div>
+  <div id="fxOut" style="position:absolute;inset:0;pointer-events:none;"></div>
   <button id="fsbtn" class="go">このモニターで全画面</button>
   <div id="outhint">VJ STUDIO — OUTPUT &nbsp;|&nbsp; この画面をサブモニターへ移動し「全画面」を押してください</div>
 </div>
@@ -238,21 +310,77 @@ function idbAll(store){return new Promise((res,rej)=>{const t=db.transaction(sto
    File を受け取り、各コンテキストで blob URL を生成 → 別ウィンドウでも確実に再生。
    自動再生を確実にするため muted で再生（音は将来 解禁ボタンで対応）。
    ============================================================ */
-function createPlayer(vA, vB, strobe, rootEl){
-  let activeEl=vA, idleEl=vB, strobeTimer=null, strobeKey=null;
+function createPlayer(vA, vB, strobe, fxEl, rootEl){
+  let activeEl=vA, idleEl=vB, strobeTimer=null, strobeKey=null, fxTimer=null, fxRaf=null, fxKind=null, playGen=0;
   const objUrls=new Map();
   function setSrc(el,file){
     const old=objUrls.get(el);
-    const u=URL.createObjectURL(file); objUrls.set(el,u); el.src=u;
-    if(old) setTimeout(()=>{ try{URL.revokeObjectURL(old);}catch(_){} },800);
+    const u=URL.createObjectURL(file); el.src=u; objUrls.set(el,u);
+    if(old) setTimeout(()=>{ try{URL.revokeObjectURL(old);}catch(_){} },300);   // 旧URLは早めに解放（連打時のメモリ蓄積を抑制）
   }
   function blackout(){
-    [vA,vB].forEach(v=>{ v.style.transition='none'; v.style.opacity=0; try{v.pause();}catch(e){} });
-    stopStrobe(); if(rootEl) rootEl.classList.remove('playing');
+    [vA,vB].forEach(v=>{ v.style.transition='none'; v.style.opacity=0; v.style.transform='none'; v.style.filter='none'; try{v.pause();}catch(e){} });
+    stopStrobe(); stopFx(); if(rootEl) rootEl.classList.remove('playing');
   }
-  function stopStrobe(){ if(strobeTimer){clearInterval(strobeTimer);strobeTimer=null;} strobe.style.opacity=0; strobeKey=null; }
-  function runStrobe(color,interval,key){
-    if(strobeKey===key){ stopStrobe(); return; }   // 同じストロボキー再押下 → 停止
+  function stopStrobe(){ if(strobeTimer){clearInterval(strobeTimer);strobeTimer=null;} strobe.style.opacity=0; strobeKey=null;
+    if(rootEl && vA.style.opacity!=='1' && vB.style.opacity!=='1') rootEl.classList.remove('playing'); }
+
+  /* ----- エフェクト（押している間だけ／離すと stopFx） ----- */
+  function stopFx(){
+    if(fxTimer){clearInterval(fxTimer);fxTimer=null;}
+    if(fxRaf){cancelAnimationFrame(fxRaf);fxRaf=null;}
+    fxKind=null;
+    if(fxEl){ fxEl.innerHTML=''; fxEl.style.cssText='position:absolute;inset:0;pointer-events:none;opacity:0;'; }
+    [vA,vB].forEach(v=>{ v.style.transform='none'; v.style.filter='none'; });
+    if(rootEl && vA.style.opacity!=='1' && vB.style.opacity!=='1') rootEl.classList.remove('playing');
+  }
+  function startChase(divisions,interval,key,direction,color){
+    if(fxKind==='chase:'+key) return;
+    stopFx(); fxKind='chase:'+key;
+    let cols,rows;
+    if(direction==='v'){ cols=divisions; rows=1; }        // 縦に割る（縦ストライプ）
+    else if(direction==='h'){ cols=1; rows=divisions; }   // 横に割る（横ストライプ）
+    else { const n=divisions>=9?3:2; cols=n; rows=n; }     // 四角（2x2 / 3x3）
+    const cellBg=(color==='white')?'#fff':'#000';          // 基本は黒
+    fxEl.style.cssText='position:absolute;inset:0;pointer-events:none;display:grid;gap:2px;opacity:1;'+
+      `grid-template-columns:repeat(${cols},1fr);grid-template-rows:repeat(${rows},1fr);`;
+    fxEl.innerHTML=''; const cells=[];
+    for(let i=0;i<cols*rows;i++){ const c=document.createElement('div'); c.style.cssText='background:'+cellBg+';opacity:0;'; fxEl.appendChild(c); cells.push(c); }
+    let idx=0;
+    fxTimer=setInterval(()=>{ cells.forEach(c=>c.style.opacity='0'); cells[idx].style.opacity='1'; idx=(idx+1)%cells.length; }, Math.max(30,interval));
+    if(rootEl) rootEl.classList.add('playing');
+  }
+  function startGlitch(interval,key){
+    if(fxKind==='glitch:'+key) return;
+    stopFx(); fxKind='glitch:'+key;
+    fxEl.style.cssText='position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen;opacity:0.6;';
+    fxTimer=setInterval(()=>{
+      const v=activeEl; const dx=Math.round((Math.random()*2-1)*9);
+      v.style.transform=`translateX(${dx}px)`;
+      v.style.filter=`hue-rotate(${Math.round(Math.random()*360)}deg) saturate(1.8) contrast(1.2)`;
+      fxEl.style.background=`linear-gradient(90deg,rgba(255,0,40,0.4),transparent ${30+Math.random()*40}%,rgba(0,80,255,0.4))`;
+      fxEl.style.transform=`translateX(${-dx}px)`;
+    }, Math.max(40,interval));
+    if(rootEl) rootEl.classList.add('playing');
+  }
+  function startZoom(interval,key){
+    if(fxKind==='zoom:'+key) return;
+    stopFx(); fxKind='zoom:'+key;
+    const myKind=fxKind;
+    const speed=Math.max(0.05,Math.min(0.4,30/Math.max(20,interval)));
+    let t=0;
+    const tick=()=>{
+      if(fxKind!==myKind) return;   // stopFx 等で fxKind が変われば確実に止まる（黒落ち保証）
+      t+=speed; const s=1+Math.abs(Math.sin(t))*0.18;
+      const sx=Math.sin(t*6.3)*5, sy=Math.cos(t*8.1)*5;
+      activeEl.style.transform=`scale(${s}) translate(${sx}px,${sy}px)`;
+      fxRaf=requestAnimationFrame(tick);
+    };
+    tick();
+    if(rootEl) rootEl.classList.add('playing');
+  }
+  function startStrobe(color,interval,key){
+    if(strobeKey===key) return;   // 既に発光中なら継続（押しっぱなし）
     stopStrobe(); strobeKey=key;
     strobe.style.background=(color==='white')?'#fff':'#000';
     let vis=true; const half=Math.max(20,interval/2);
@@ -261,11 +389,13 @@ function createPlayer(vA, vB, strobe, rootEl){
     if(rootEl) rootEl.classList.add('playing');
   }
   function playVideo(msg){
+    const myGen=++playGen;   // 連打レース対策：古い onended / pause タイマーを無効化する世代トークン
     const next=idleEl, cur=activeEl;
     try{
+      next.style.transform='none'; next.style.filter='none';   // 前のエフェクト残留を消し、常にクリーンな絵で出す
       next.loop=!!msg.loop; next.muted=true; next.playsInline=true;
       next.onerror=()=>blackout();
-      next.onended=()=>{ if(!next.loop){ next.style.transition='opacity .4s linear'; next.style.opacity=0; setTimeout(()=>{ try{next.pause();}catch(e){} },420);} };
+      next.onended=()=>{ if(myGen!==playGen) return; if(!next.loop){ next.style.transition='opacity .4s linear'; next.style.opacity=0; setTimeout(()=>{ try{next.pause();}catch(e){} if(rootEl && vA.style.opacity!=='1' && vB.style.opacity!=='1') rootEl.classList.remove('playing'); },420);} };
       if(msg.file) setSrc(next,msg.file); else if(msg.url) next.src=msg.url;
       next.currentTime=0;
       const p=next.play(); if(p&&p.catch)p.catch(()=>{});
@@ -274,7 +404,7 @@ function createPlayer(vA, vB, strobe, rootEl){
         const sec=msg.xfadeSec||0.6;
         next.style.transition=`opacity ${sec}s linear`; cur.style.transition=`opacity ${sec}s linear`;
         requestAnimationFrame(()=>{ next.style.opacity=1; cur.style.opacity=0; });
-        setTimeout(()=>{ if(cur!==next){ try{cur.pause();}catch(e){} } }, sec*1000+60);
+        setTimeout(()=>{ if(myGen===playGen && cur!==next){ try{cur.pause();}catch(e){} } }, sec*1000+60);
       }else{ // CUT
         next.style.transition='none'; next.style.opacity=1;
         cur.style.transition='none'; cur.style.opacity=0;
@@ -284,13 +414,24 @@ function createPlayer(vA, vB, strobe, rootEl){
     }catch(e){ blackout(); }
   }
   function fadeOutAll(sec){
-    [vA,vB].forEach(v=>{ v.style.transition=`opacity ${sec}s linear`; v.style.opacity=0; setTimeout(()=>{ try{v.pause();}catch(e){} },sec*1000+60); });
+    stopFx();   // エフェクト（チェイス/グリッチ/ズーム）を即停止 → 黒に落ちきる
+    [vA,vB].forEach(v=>{ v.style.transition=`opacity ${sec}s linear`; v.style.opacity=0; setTimeout(()=>{ try{v.pause();}catch(e){} v.style.transform='none'; v.style.filter='none'; },sec*1000+60); });
     strobe.style.transition=`opacity ${sec}s linear`; strobe.style.opacity=0;
     setTimeout(()=>{ stopStrobe(); strobe.style.transition=''; if(rootEl) rootEl.classList.remove('playing'); }, sec*1000+80);
   }
   function handle(m){
-    if(m.t==='play'){ if(m.kind==='strobe') runStrobe(m.color,m.interval,m.key); else playVideo(m); }
-    else if(m.t==='fadeout'){ fadeOutAll(m.sec||1.5); }
+    if(m.t==='play'){
+      if(m.kind==='strobe') startStrobe(m.color,m.interval,m.key);
+      else if(m.kind==='chase') startChase(m.divisions,m.interval,m.key,m.direction,m.color);
+      else if(m.kind==='glitch') startGlitch(m.interval,m.key);
+      else if(m.kind==='zoom') startZoom(m.interval,m.key);
+      else playVideo(m);
+    }
+    else if(m.t==='fx-stop'){
+      if(m.key){ if(strobeKey===m.key) stopStrobe(); if(fxKind && fxKind.split(':')[1]===m.key) stopFx(); }
+      else { stopStrobe(); stopFx(); }   // key 無し＝全停止（フォーカス喪失時の保険）
+    }
+    else if(m.t==='fadeout'){ stopStrobe(); stopFx(); fadeOutAll(m.sec||1.5); }
     else if(m.t==='blackout'){ blackout(); }
   }
   return { handle, blackout };
@@ -303,11 +444,11 @@ if(IS_OUTPUT){
   document.getElementById('output').style.display='block';
   document.title = 'VJ STUDIO — OUTPUT';
   const out = document.getElementById('output');
-  const player = createPlayer(document.getElementById('vA'), document.getElementById('vB'), document.getElementById('strobe'), out);
+  const player = createPlayer(document.getElementById('vA'), document.getElementById('vB'), document.getElementById('strobe'), document.getElementById('fxOut'), out);
   document.getElementById('fsbtn').onclick = ()=>{ out.requestFullscreen && out.requestFullscreen().catch(()=>{}); };
   BC.onmessage = (e)=>{ const m=e.data; if(m.t==='ping'){ BC.postMessage({t:'pong'}); return; } player.handle(m); };
   BC.postMessage({t:'pong'});
-  window.addEventListener('beforeunload',()=>BC.postMessage({t:'outclosed'}));
+  window.addEventListener('beforeunload',()=>{ try{player.blackout();}catch(e){} BC.postMessage({t:'outclosed'}); });
 }
 
 /* ============================================================
@@ -317,15 +458,20 @@ if(!IS_OUTPUT){
   document.getElementById('control').style.display='flex';
 
   const state = {
-    assignments:{},          // code -> {kind, name, url, thumb, loop, color, interval, hasHandle}
+    banks:[{id:1,name:'BANK 1',assignments:{}}],   // タブ＝バンク。各バンクが独立した割当を持つ
+    currentBank:0,
+    get assignments(){ return this.banks[this.currentBank].assignments; },  // 現在タブの割当
     fadeMode:'cut',
     xfadeSec:0.6,
     foSec:1.5,
     selected:null,
     outOpen:false,
   };
+  function bankKey(code){ return 'b'+state.banks[state.currentBank].id+':'+code; }   // 保存キーにバンクID
   let outWin = null;
-  const preview = createPlayer(document.getElementById('pvA'), document.getElementById('pvB'), document.getElementById('pvStrobe'), document.getElementById('preview'));
+  let mousePressed = null;            // マウスで押下保持中のキー（単一）
+  const activeHolds = new Set();      // 物理キーで押下保持中のキー（複数可）
+  const preview = createPlayer(document.getElementById('pvA'), document.getElementById('pvB'), document.getElementById('pvStrobe'), document.getElementById('pvFx'), document.getElementById('preview'));
 
   /* ---------- build keyboard ---------- */
   const kb = document.getElementById('keyboard');
@@ -334,19 +480,22 @@ if(!IS_OUTPUT){
     LAYOUT.forEach((row,ri)=>{
       const rEl=document.createElement('div'); rEl.className='krow';
       // 各行先頭に固定の特殊キー風表示（見やすさ）
-      if(ri===2){ rEl.appendChild(specialKey('TAB','wide-pad')); }
+      if(ri===0) rEl.appendChild(specialKey('ESC','k-esc','fade'));
+      if(ri===1) rEl.appendChild(specialKey('TAB','k-tab'));
+      if(ri===2) rEl.appendChild(specialKey('CAPS','k-caps'));
+      if(ri===3) rEl.appendChild(specialKey('SHIFT','k-shift'));
       row.forEach(([code,label])=>{
         rEl.appendChild(makeKey(code,label));
       });
-      if(ri===2){ rEl.appendChild(specialKey('ENTER','wide')); }
-      if(ri===0){ rEl.appendChild(specialKey('ESC ▸ FADE','wide','fade')); }
-      if(ri===LAYOUT.length-1){ rEl.classList.add('krow-bottom'); const pv=document.getElementById('preview'); if(pv) rEl.appendChild(pv); }
+      if(ri===0) rEl.appendChild(specialKey('DEL','k-del'));
+      if(ri===2) rEl.appendChild(specialKey('RETURN','k-ret'));
+      if(ri===3) rEl.appendChild(specialKey('SHIFT','k-shift'));
       kb.appendChild(rEl);
     });
   }
   function specialKey(text,cls,role){
     const k=document.createElement('div'); k.className='key special '+(cls||'');
-    if(role==='fade'){ k.title='ESCキーでフェードアウト'; }
+    if(role==='fade'){ k.title='クリック / ESCキーでフェードアウト'; k.style.cursor='pointer'; k.onclick=()=>fadeOut(); }
     k.innerHTML=`<span class="klabel">${text}</span>`;
     return k;
   }
@@ -355,10 +504,25 @@ if(!IS_OUTPUT){
     k.className='key'; k.dataset.code=code;
     if(label==='SPACE') k.classList.add('wider');
     k.innerHTML=`<div class="thumb"></div><span class="klabel">${label}</span>`;
-    // events
-    k.addEventListener('click',(e)=>{ if(e.target.closest('.badge')||e.target.closest('.del'))return; selectKey(code); });
-    k.addEventListener('dblclick',()=>{ if(state.assignments[code]) triggerKey(code); });
-    // drag & drop
+    // 本番操作：押している間＝発火（ストロボはモメンタリ＝離すと停止）
+    k.addEventListener('mousedown',(e)=>{
+      if(e.target.closest('.badge')||e.target.closest('.del'))return;
+      selectKey(code);
+      if(state.assignments[code]){ mousePressed=code; triggerKey(code); }
+    });
+    k.addEventListener('mouseup',()=>{ if(mousePressed===code){ releaseKey(code); mousePressed=null; } });
+    // 配置替え：割当キーを別キーへドラッグ＆ドロップで移動
+    k.addEventListener('dragstart',e=>{
+      if(!state.assignments[code]){ e.preventDefault(); return; }
+      if(mousePressed===code){   // ドラッグ開始 → 直前の発火を取り消す（掴んだだけで本番に出さない）
+        const a=state.assignments[code];
+        if(a.kind==='video'){ const m={t:'blackout'}; preview.handle(m); if(state.outOpen) BC.postMessage(m); }
+        else releaseKey(code);
+        mousePressed=null;
+      }
+      e.dataTransfer.effectAllowed='move';
+      e.dataTransfer.setData('application/x-vj-move',code);
+    });
     k.addEventListener('dragover',e=>{e.preventDefault();k.classList.add('dragover');});
     k.addEventListener('dragleave',()=>k.classList.remove('dragover'));
     k.addEventListener('drop',e=>{e.preventDefault();k.classList.remove('dragover');handleDrop(code,e);});
@@ -367,23 +531,83 @@ if(!IS_OUTPUT){
 
   function keyEl(code){ return kb.querySelector(`.key[data-code="${CSS.escape(code)}"]`); }
 
+  function fxIcon(kind){
+    if(kind==='zoom') return '<svg class="fxic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="7.5"/><circle cx="12" cy="12" r="12"/></svg>';
+    const p={
+      'strobe-white':'<path d="M13 2L4 14h6l-1 8 9-12h-6l1-6z"/>',
+      'strobe-black':'<path d="M13 2L4 14h6l-1 8 9-12h-6l1-6z"/>',
+      chase:'<rect x="3" y="3" width="8" height="8"/><rect x="13" y="3" width="8" height="8" opacity=".35"/><rect x="3" y="13" width="8" height="8" opacity=".35"/><rect x="13" y="13" width="8" height="8" opacity=".35"/>',
+      glitch:'<rect x="2" y="5" width="14" height="3"/><rect x="7" y="11" width="15" height="3"/><rect x="4" y="17" width="11" height="3"/>',
+    };
+    return '<svg class="fxic" viewBox="0 0 24 24" fill="currentColor">'+(p[kind]||'')+'</svg>';
+  }
+
+  /* ---------- tabs / banks ---------- */
+  function rebuildKeys(){ document.querySelectorAll('.key[data-code]').forEach(k=>renderKey(k.dataset.code)); }
+  function renderTabs(){
+    const tabs=document.getElementById('tabs'); if(!tabs) return; tabs.innerHTML='';
+    state.banks.forEach((b,i)=>{
+      const t=document.createElement('div'); t.className='tab'+(i===state.currentBank?' active':'');
+      t.title='クリックで切替 / ダブルクリックで名前変更';
+      const lb=document.createElement('span'); lb.textContent=b.name; t.appendChild(lb);
+      if(state.banks.length>1){ const x=document.createElement('span'); x.className='tabx'; x.textContent='×'; x.title='このタブを削除'; x.onclick=ev=>{ev.stopPropagation();deleteBank(i);}; t.appendChild(x); }
+      t.onclick=()=>switchBank(i);
+      t.ondblclick=()=>renameBank(i);
+      tabs.appendChild(t);
+    });
+  }
+  async function deleteBank(i){
+    if(state.banks.length<=1){ flashDetail('最後のタブは消せません'); return; }
+    if(!confirm('タブ「'+state.banks[i].name+'」を中身ごと削除しますか？')) return;
+    const id=state.banks[i].id;
+    const metas=await idbAll('meta');
+    for(const [k] of metas){ const mt=String(k).match(/^b(\d+):/); if(mt && +mt[1]===id){ await idbDel('meta',k); await idbDel('handles',k); } }
+    state.banks.splice(i,1);
+    if(state.currentBank>=state.banks.length) state.currentBank=state.banks.length-1;
+    state.selected=null;
+    saveBanks(); saveSettings();
+    renderTabs(); rebuildKeys(); renderDetail();
+  }
+  function switchBank(i){
+    if(i<0||i>=state.banks.length||i===state.currentBank) return;
+    state.currentBank=i; state.selected=null;
+    renderTabs(); rebuildKeys(); renderDetail(); saveSettings();
+  }
+  function addBank(){
+    const id=Math.max(0,...state.banks.map(b=>b.id))+1;
+    state.banks.push({id,name:'BANK '+id,assignments:{}});
+    state.currentBank=state.banks.length-1; state.selected=null;
+    renderTabs(); rebuildKeys(); renderDetail(); saveBanks();
+  }
+  function renameBank(i){
+    const name=prompt('タブの名前を入力',state.banks[i].name);
+    if(name!=null && name.trim()){ state.banks[i].name=name.trim(); renderTabs(); saveBanks(); }
+  }
+
   function renderKey(code){
     const k=keyEl(code); if(!k) return;
     const a=state.assignments[code];
-    k.classList.remove('strobe-white','strobe-black');
+    k.classList.remove('strobe-white','strobe-black','fx-chase','fx-glitch','fx-zoom');
+    k.classList.toggle('filled', !!a);
+    k.draggable = !!a;
     const thumb=k.querySelector('.thumb');
+    thumb.innerHTML='';
     k.querySelectorAll('.badge,.del,.name').forEach(n=>n.remove());
-    if(!a){ thumb.style.background=''; thumb.style.backgroundImage=''; return; }
-    // strobe styling
-    if(a.kind==='strobe'){ k.classList.add(a.color==='white'?'strobe-white':'strobe-black'); thumb.style.backgroundImage=''; }
+    if(!a){ thumb.style.background=''; thumb.style.backgroundImage=''; thumb.style.backgroundColor=''; return; }
+    // effect / video styling
+    if(a.kind!=='video'){
+      k.classList.add(a.kind==='strobe'?(a.color==='white'?'strobe-white':'strobe-black'):'fx-'+a.kind);
+      thumb.style.backgroundImage=''; thumb.style.backgroundColor='#16161a';
+      thumb.innerHTML=fxIcon(a.kind==='strobe'?('strobe-'+a.color):a.kind);
+    }
     else { thumb.style.backgroundColor = a.thumb?'transparent':'#1a1a1a'; thumb.style.backgroundImage = a.thumb?`url(${a.thumb})`:''; }
     // name
     const nm=document.createElement('div'); nm.className='name';
-    nm.textContent = a.kind==='strobe' ? (a.color==='white'?'白ストロボ':'黒ストロボ') : a.name;
+    nm.textContent = a.kind==='video' ? a.name : (a.kind==='strobe'?(a.color==='white'?'白ストロボ':'黒ストロボ'):a.kind==='chase'?('チェイス'+(a.divisions||4)):a.kind==='glitch'?'グリッチ':'ズーム');
     k.appendChild(nm);
     // badge
     const b=document.createElement('div');
-    if(a.kind==='strobe'){ b.className='badge strobe'; b.textContent='ST'; b.title='ストロボ'; }
+    if(a.kind!=='video'){ b.className='badge strobe'; b.textContent=a.kind==='strobe'?'ST':a.kind==='chase'?'CH':a.kind==='glitch'?'GL':'ZM'; b.title='エフェクト（押している間だけ）'; }
     else if(a.loop){ b.className='badge loop'; b.textContent='∞'; b.title='ループ中（クリックで1回に）'; b.onclick=ev=>{ev.stopPropagation();toggleLoop(code);}; }
     else { b.className='badge once'; b.textContent='1'; b.title='1回で黒に落ちる（クリックでループに）'; b.onclick=ev=>{ev.stopPropagation();toggleLoop(code);}; }
     k.appendChild(b);
@@ -395,11 +619,21 @@ if(!IS_OUTPUT){
 
   /* ---------- drop handling ---------- */
   async function handleDrop(code,e){
+    // 0) 配置替え（キー間の移動）？
+    const moveFrom = e.dataTransfer.getData('application/x-vj-move');
+    if(moveFrom){ if(moveFrom!==code) await moveAssignment(moveFrom, code); return; }
     // 1) preset (strobe) ?
     const preset = e.dataTransfer.getData('application/x-vj-preset');
     if(preset){
-      const color = preset==='strobe-white'?'white':'black';
-      state.assignments[code] = {kind:'strobe', color, interval:80};
+      const sp=srcSpeed(), dv=srcDiv();
+      let a;
+      if(preset==='strobe-white') a={kind:'strobe',color:'white',interval:sp};
+      else if(preset==='strobe-black') a={kind:'strobe',color:'black',interval:sp};
+      else if(preset==='chase') a={kind:'chase',divisions:dv,interval:sp,direction:srcDir(),color:'black'};
+      else if(preset==='glitch') a={kind:'glitch',interval:sp};
+      else if(preset==='zoom') a={kind:'zoom',interval:sp};
+      else return;
+      state.assignments[code]=a;
       renderKey(code); selectKey(code);
       persist(code);
       return;
@@ -429,10 +663,10 @@ if(!IS_OUTPUT){
     state.assignments[code]=a;
     renderKey(code); selectKey(code);
     // save handle for persistence
-    if(handle){ try{ await idbPut('handles',code,handle); }catch(_){} }
-    else { idbDel('handles',code).catch(()=>{}); }
-    // thumbnail (async)
-    makeThumb(url).then(async t=>{ a.thumb=t; renderKey(code); await persist(code); });
+    if(handle){ try{ await idbPut('handles',bankKey(code),handle); }catch(_){} }
+    else { idbDel('handles',bankKey(code)).catch(()=>{}); }
+    // thumbnail (async) — 生成中に解除/移動されたら書き戻さない（ゾンビ割当防止）
+    makeThumb(url).then(async t=>{ if(state.assignments[code]!==a) return; a.thumb=t; renderKey(code); await persist(code); });
     await persist(code);
   }
 
@@ -458,22 +692,39 @@ if(!IS_OUTPUT){
   /* ---------- persistence ---------- */
   async function persist(code){
     const a=state.assignments[code];
-    if(!a){ await idbDel('meta',code); await idbDel('handles',code); return; }
-    const meta={kind:a.kind,name:a.name||'',thumb:a.thumb||'',loop:!!a.loop,color:a.color||null,interval:a.interval||80};
-    await idbPut('meta',code,meta);
+    const k=bankKey(code);
+    if(!a){ await idbDel('meta',k); await idbDel('handles',k); return; }
+    const meta={kind:a.kind,name:a.name||'',thumb:a.thumb||'',loop:!!a.loop,color:a.color||null,interval:a.interval||80,divisions:a.divisions||null,direction:a.direction||null};
+    await idbPut('meta',k,meta);
+    saveBanks();   // 素材とバンク一覧を常に同時更新
   }
+  async function saveBanks(){ await idbPut('settings','banks', state.banks.map(b=>({id:b.id,name:b.name}))); }
   async function saveSettings(){
-    await idbPut('settings','main',{fadeMode:state.fadeMode,xfadeSec:state.xfadeSec,foSec:state.foSec});
+    const cb=state.banks[state.currentBank];
+    await idbPut('settings','main',{fadeMode:state.fadeMode,xfadeSec:state.xfadeSec,foSec:state.foSec,lastBankId:cb?cb.id:1});
   }
 
   async function loadAll(){
+    // バンク一覧を復元
+    const bankMeta = await idbGet('settings','banks');
+    if(bankMeta && bankMeta.length){ state.banks = bankMeta.map(b=>({id:b.id,name:b.name,assignments:{}})); }
+    state.currentBank=0;
+    // meta をバンク別に振り分け
     const metas = await idbAll('meta');
-    for(const [code,m] of metas){
-      state.assignments[code] = {kind:m.kind,name:m.name,thumb:m.thumb,loop:m.loop,color:m.color,interval:m.interval,url:'',hasHandle:false,needsLoad:m.kind==='video'};
-      renderKey(code);
+    for(const [key,m] of metas){
+      const mt = String(key).match(/^b(\d+):(.+)$/); if(!mt) continue;
+      const bankId=+mt[1], code=mt[2];
+      let bank = state.banks.find(b=>b.id===bankId);
+      if(!bank){ bank={id:bankId,name:'BANK '+bankId,assignments:{}}; state.banks.push(bank); }  // 未知バンクも捨てず復元（素材消失防止）
+      bank.assignments[code]={kind:m.kind,name:m.name,thumb:m.thumb,loop:m.loop,color:m.color,interval:m.interval,divisions:m.divisions,direction:m.direction,url:'',hasHandle:false,needsLoad:m.kind==='video'};
     }
+    state.banks.sort((a,b)=>a.id-b.id);
     const s=await idbGet('settings','main');
-    if(s){ state.fadeMode=s.fadeMode||'cut'; state.xfadeSec=s.xfadeSec||0.6; state.foSec=s.foSec||1.5; }
+    if(s){ state.fadeMode=s.fadeMode||'cut'; state.xfadeSec=s.xfadeSec||0.6; state.foSec=s.foSec||1.5;
+      if(s.lastBankId){ const i=state.banks.findIndex(b=>b.id===s.lastBankId); if(i>=0) state.currentBank=i; } }
+    saveBanks();   // 既定バンク含めバンク一覧を確実に保存（クラッシュ時の不整合防止）
+    renderTabs();
+    rebuildKeys();
     syncSettingsUI();
     const need = Object.values(state.assignments).some(a=>a.needsLoad);
     if(need) flashDetail('前回のセットを読み込みました。再生するには「セット読込」を押してください。');
@@ -482,8 +733,12 @@ if(!IS_OUTPUT){
   // 「セット読込」: 保存済みハンドルから権限取得→url再生成
   async function loadSet(){
     const handles=await idbAll('handles');
+    const curId=state.banks[state.currentBank].id;
     let ok=0, fail=0;
-    for(const [code,h] of handles){
+    for(const [key,h] of handles){
+      const mt=String(key).match(/^b(\d+):(.+)$/); if(!mt) continue;
+      if(+mt[1]!==curId) continue;
+      const code=mt[2];
       const a=state.assignments[code]; if(!a) continue;
       try{
         let perm=await h.queryPermission({mode:'read'});
@@ -515,16 +770,11 @@ if(!IS_OUTPUT){
       detail.innerHTML=`<span class="selname">[${label}]</span><span class="hint">空きキー。動画をドラッグ&ドロップ、またはプリセットをドロップ。</span>`;
       return;
     }
-    if(a.kind==='strobe'){
-      detail.innerHTML=`<span class="selname">[${label}] ${a.color==='white'?'白ストロボ':'黒ストロボ'}</span>
-        <div class="slider"><span class="lab">点滅の速さ（間隔）</span>
-        <input type="range" id="dInterval" min="20" max="400" step="5" value="${a.interval}">
-        <span class="val" id="dIntervalV">${a.interval}ms</span></div>
-        <button id="dTest" class="go">テスト点灯</button>
+    if(a.kind!=='video'){
+      const nm=a.kind==='strobe'?(a.color==='white'?'白ストロボ':'黒ストロボ'):a.kind==='chase'?('チェイス '+(a.divisions||4)+'分割'):a.kind==='glitch'?'グリッチ':'ズーム';
+      detail.innerHTML=`<span class="selname">[${label}] ${nm}</span>
+        <span class="hint">速さ ${a.interval}ms${a.kind==='chase'?' / '+(a.divisions||4)+'分割':''}　（速さ・分割は右上 SOURCES で決めてからキーに置きます）</span>
         <button id="dDel" class="danger">割り当て解除</button>`;
-      const ri=document.getElementById('dInterval');
-      ri.oninput=()=>{ a.interval=+ri.value; document.getElementById('dIntervalV').textContent=a.interval+'ms'; persist(code); };
-      document.getElementById('dTest').onclick=()=>triggerKey(code);
       document.getElementById('dDel').onclick=()=>clearKey(code);
     }else{
       detail.innerHTML=`<span class="selname">[${label}]</span><span class="hint">${a.name}</span>
@@ -556,24 +806,57 @@ if(!IS_OUTPUT){
     const a=state.assignments[code];
     if(a&&a.url) URL.revokeObjectURL(a.url);
     delete state.assignments[code];
-    idbDel('meta',code); idbDel('handles',code);
+    idbDel('meta',bankKey(code)); idbDel('handles',bankKey(code));
     renderKey(code);
     if(state.selected===code) renderDetail();
+  }
+  // 配置替え：from のキーを to へ（to に既存があれば入れ替え）
+  async function moveAssignment(from, to){
+    const src=state.assignments[from]; if(!src) return;
+    const dst=state.assignments[to];
+    state.assignments[to]=src;
+    if(dst) state.assignments[from]=dst; else delete state.assignments[from];
+    renderKey(from); renderKey(to);
+    await persist(from); await persist(to);
+    // 保存ハンドルも入れ替え（再起動後も配置を記憶）
+    const hFrom=await idbGet('handles',bankKey(from)).catch(()=>null);
+    const hTo=await idbGet('handles',bankKey(to)).catch(()=>null);
+    if(hTo) await idbPut('handles',bankKey(from),hTo); else await idbDel('handles',bankKey(from));
+    if(hFrom) await idbPut('handles',bankKey(to),hFrom); else await idbDel('handles',bankKey(to));
+    selectKey(to);
   }
 
   /* ---------- trigger / playback ---------- */
   function triggerKey(code){
     const a=state.assignments[code]; if(!a) return;
-    flashKey(code);
+    flashKey(code); updateNow(code);
     let msg;
-    if(a.kind==='strobe'){
-      msg={t:'play',kind:'strobe',color:a.color,interval:a.interval,key:code};
-    }else{
+    if(a.kind==='strobe'){ msg={t:'play',kind:'strobe',color:a.color,interval:a.interval,key:code}; }
+    else if(a.kind==='chase'){ msg={t:'play',kind:'chase',divisions:a.divisions||4,interval:a.interval,direction:a.direction||'square',color:a.color||'black',key:code}; }
+    else if(a.kind==='glitch'){ msg={t:'play',kind:'glitch',interval:a.interval,key:code}; }
+    else if(a.kind==='zoom'){ msg={t:'play',kind:'zoom',interval:a.interval,key:code}; }
+    else {
       if(a.needsLoad || !a.file){ flashDetail('このキーは未読込です。「セット読込」を押してください。'); return; }
       msg={t:'play',kind:'video',file:a.file,loop:a.loop,fadeMode:state.fadeMode,xfadeSec:state.xfadeSec,key:code};
     }
     preview.handle(msg);                    // 手元プレビュー（常に再生）
     if(state.outOpen) BC.postMessage(msg);  // 出力ウィンドウ（開いていれば）
+  }
+  function releaseKey(code){
+    const a=state.assignments[code];
+    if(a && a.kind!=='video'){               // エフェクトは離したら停止（そのキーだけ）
+      const msg={t:'fx-stop',key:code};
+      preview.handle(msg);
+      if(state.outOpen) BC.postMessage(msg);
+    }
+  }
+  function srcSpeed(){ const e=document.getElementById('srcSpeed'); return e?+e.value:80; }
+  function srcDiv(){ const b=document.querySelector('#srcDiv button.on'); return b?+b.dataset.d:4; }
+  function srcDir(){ const b=document.querySelector('#srcChaseDir button.on'); return b?b.dataset.dir:'square'; }
+  function updateNow(code){
+    const a=state.assignments[code]; const nk=document.getElementById('nowKey'); const ns=document.getElementById('nowState');
+    if(nk) nk.textContent=labelOf(code);
+    if(ns){ let st='—'; if(a){ st = a.kind==='video' ? (a.loop?'LOOP':'ONCE') : a.kind.toUpperCase()+(a.kind==='chase'?(' '+(a.divisions||4)):''); } ns.textContent=st; }
   }
   function flashKey(code){ const k=keyEl(code); if(!k)return; k.classList.add('flash'); setTimeout(()=>k.classList.remove('flash'),130); }
   function fadeOut(){ const msg={t:'fadeout',sec:state.foSec}; preview.handle(msg); if(state.outOpen) BC.postMessage(msg); }
@@ -584,11 +867,24 @@ if(!IS_OUTPUT){
     if(tag==='input'||tag==='textarea') return;
     if(e.code==='Escape'){ e.preventDefault(); fadeOut(); return; }
     if(e.repeat) return;
-    if(state.assignments[e.code]){ e.preventDefault(); triggerKey(e.code); }
+    if(state.assignments[e.code]){ e.preventDefault(); activeHolds.add(e.code); triggerKey(e.code); }
   });
+  window.addEventListener('keyup',e=>{
+    if(activeHolds.has(e.code)){ activeHolds.delete(e.code); releaseKey(e.code); }
+  });
+  document.addEventListener('mouseup',()=>{ if(mousePressed){ releaseKey(mousePressed); mousePressed=null; } });
+  // フォーカスが外れた/タブが隠れたら、押しっぱなしを強制解除（ストロボ固着・光過敏の安全対策）
+  function panicRelease(){
+    activeHolds.forEach(c=>releaseKey(c)); activeHolds.clear();
+    if(mousePressed){ releaseKey(mousePressed); mousePressed=null; }
+    const msg={t:'fx-stop'}; preview.handle(msg); if(state.outOpen) BC.postMessage(msg);
+  }
+  window.addEventListener('blur', panicRelease);
+  document.addEventListener('visibilitychange', ()=>{ if(document.hidden) panicRelease(); });
 
   /* ---------- output window ---------- */
   function openOutput(){
+    if(outWin && !outWin.closed){ outWin.focus(); setOut(true); return; }   // 既に開いていれば前面化のみ（二重ウィンドウ防止）
     // ★ ポップアップブロック回避：クリック直後に await を挟まず同期で開く
     outWin=window.open('?role=output','vjOutput','width=1280,height=720,menubar=no,toolbar=no,location=no,status=no');
     if(!outWin){ flashDetail('ポップアップがブロックされました。アドレスバー右の「ポップアップ」を許可してください。'); return; }
@@ -616,11 +912,33 @@ if(!IS_OUTPUT){
   };
   // 出力ウィンドウが閉じられた監視
   setInterval(()=>{ if(outWin && outWin.closed){ outWin=null; setOut(false);} },1000);
+  // ハートビート：CONTROL をリロードしても、生きている出力ウィンドウを ping/pong で再検知
+  BC.postMessage({t:'ping'});
+  setInterval(()=>{ BC.postMessage({t:'ping'}); }, 3000);
 
   /* ---------- header controls ---------- */
   document.getElementById('openOut').onclick=openOutput;
   document.getElementById('fadeOutBtn').onclick=fadeOut;
   document.getElementById('loadSet').onclick=loadSet;
+  document.getElementById('addBank').onclick=addBank;
+  // SOURCES 設定（速さ・分割）
+  const ss=document.getElementById('srcSpeed');
+  ss.oninput=()=>{ document.getElementById('srcSpeedV').textContent=ss.value+'ms'; };
+  document.getElementById('srcDiv').onclick=e=>{ const b=e.target.closest('button'); if(!b)return; document.querySelectorAll('#srcDiv button').forEach(x=>x.classList.toggle('on',x===b)); };
+  document.getElementById('srcChaseDir').onclick=e=>{ const b=e.target.closest('button'); if(!b)return; document.querySelectorAll('#srcChaseDir button').forEach(x=>x.classList.toggle('on',x===b)); };
+  // タップテンポ
+  let tapTimes=[];
+  document.getElementById('tapBtn').onclick=()=>{
+    const now=performance.now();
+    tapTimes=tapTimes.filter(t=>now-t<2500); tapTimes.push(now);
+    if(tapTimes.length>=2){
+      const iv=[]; for(let i=1;i<tapTimes.length;i++) iv.push(tapTimes[i]-tapTimes[i-1]);
+      const avg=iv.reduce((a,b)=>a+b,0)/iv.length;
+      document.getElementById('bpmVal').textContent=Math.round(60000/avg)+' BPM';
+      const ms=Math.max(20,Math.min(500,Math.round(avg/4)));
+      ss.value=ms; document.getElementById('srcSpeedV').textContent=ms+'ms';
+    }
+  };
   document.getElementById('fadeModeTog').onclick=e=>{
     const b=e.target.closest('button'); if(!b)return;
     state.fadeMode=b.dataset.mode;
@@ -640,14 +958,23 @@ if(!IS_OUTPUT){
 
   // preset drag
   document.querySelectorAll('.preset').forEach(p=>{
-    p.addEventListener('dragstart',e=>{ e.dataTransfer.setData('application/x-vj-preset',p.dataset.preset); });
+    p.addEventListener('dragstart',e=>{
+      e.dataTransfer.effectAllowed='copy';
+      e.dataTransfer.setData('application/x-vj-preset',p.dataset.preset);
+      e.dataTransfer.setData('text/plain',p.dataset.preset);
+    });
   });
 
   /* ---------- boot ---------- */
   (async ()=>{
     buildKeyboard();
-    await openDB();
-    await loadAll();
+    if(!window.isSecureContext){ flashDetail('⚠ この開き方では素材の保存・復元ができません。「VJ STUDIO 起動.command」から開いてください。'); }
+    try{
+      await openDB();
+      await loadAll();
+    }catch(e){
+      flashDetail('⚠ 保存領域にアクセスできません。プライベートモードでなく通常ウィンドウで開いてください。');
+    }
     renderDetail();
   })();
 }
