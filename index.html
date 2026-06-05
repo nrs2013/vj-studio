@@ -122,10 +122,11 @@
   .logo-drop{border:0.5px dashed var(--line2);border-radius:4px;padding:12px 6px;text-align:center;font-size:11px;color:var(--faint);cursor:pointer;background:var(--panel2);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
   .logo-drop.has{border-style:solid;border-color:var(--cyan);color:var(--cyan);}
   .logo-drop.dragover{border-color:var(--green);color:var(--green);background:rgba(168,232,120,0.08);}
-  .logo-sliders{display:flex;flex-direction:column;gap:4px;}
-  .logo-sliders label{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--dim);}
-  .logo-sliders label span{min-width:2.6em;}
-  .logo-sliders input[type=range]{flex:1;accent-color:var(--cyan);height:14px;}
+  .logo-sliders{display:flex;flex-direction:column;gap:5px;}
+  .logo-sliders label{display:flex;align-items:center;gap:8px;font-family:var(--bebas);font-size:12px;letter-spacing:0.12em;color:var(--dim);}
+  .logo-sliders label span{min-width:1.8em;color:var(--faint);}
+  .logo-sliders input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:2px;background:var(--line2);border-radius:2px;cursor:pointer;}
+  .logo-sliders input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:11px;height:11px;border-radius:50%;background:var(--cyan);cursor:pointer;}
   .logo-layer{position:absolute;pointer-events:none;z-index:5;display:none;}
   .logo-layer.on{display:block;}
   .logo-layer img,.logo-layer video{width:100%;height:100%;object-fit:contain;display:block;}
@@ -282,29 +283,29 @@
   <div id="logobar">
     <div class="logoslot" data-logo="0">
       <div class="logo-head"><span>LOGO 1</span><button class="logo-onoff" data-logo="0">OFF</button></div>
-      <div class="logo-drop" data-logo="0">透過PNG / WebM をドロップ</div>
+      <div class="logo-drop" data-logo="0">DROP PNG / WebM</div>
       <div class="logo-sliders">
-        <label><span>大きさ</span><input type="range" class="logo-size" data-logo="0" min="3" max="120" step="1" value="30"></label>
-        <label><span>左右</span><input type="range" class="logo-x" data-logo="0" min="0" max="100" step="1" value="50"></label>
-        <label><span>上下</span><input type="range" class="logo-y" data-logo="0" min="0" max="100" step="1" value="50"></label>
+        <label><span>SIZE</span><input type="range" class="logo-size" data-logo="0" min="3" max="120" step="1" value="30"></label>
+        <label><span>X</span><input type="range" class="logo-x" data-logo="0" min="0" max="100" step="1" value="50"></label>
+        <label><span>Y</span><input type="range" class="logo-y" data-logo="0" min="0" max="100" step="1" value="50"></label>
       </div>
     </div>
     <div class="logoslot" data-logo="1">
       <div class="logo-head"><span>LOGO 2</span><button class="logo-onoff" data-logo="1">OFF</button></div>
-      <div class="logo-drop" data-logo="1">透過PNG / WebM をドロップ</div>
+      <div class="logo-drop" data-logo="1">DROP PNG / WebM</div>
       <div class="logo-sliders">
-        <label><span>大きさ</span><input type="range" class="logo-size" data-logo="1" min="3" max="120" step="1" value="30"></label>
-        <label><span>左右</span><input type="range" class="logo-x" data-logo="1" min="0" max="100" step="1" value="50"></label>
-        <label><span>上下</span><input type="range" class="logo-y" data-logo="1" min="0" max="100" step="1" value="50"></label>
+        <label><span>SIZE</span><input type="range" class="logo-size" data-logo="1" min="3" max="120" step="1" value="30"></label>
+        <label><span>X</span><input type="range" class="logo-x" data-logo="1" min="0" max="100" step="1" value="50"></label>
+        <label><span>Y</span><input type="range" class="logo-y" data-logo="1" min="0" max="100" step="1" value="50"></label>
       </div>
     </div>
     <div class="logoslot" data-logo="2">
       <div class="logo-head"><span>LOGO 3</span><button class="logo-onoff" data-logo="2">OFF</button></div>
-      <div class="logo-drop" data-logo="2">透過PNG / WebM をドロップ</div>
+      <div class="logo-drop" data-logo="2">DROP PNG / WebM</div>
       <div class="logo-sliders">
-        <label><span>大きさ</span><input type="range" class="logo-size" data-logo="2" min="3" max="120" step="1" value="30"></label>
-        <label><span>左右</span><input type="range" class="logo-x" data-logo="2" min="0" max="100" step="1" value="50"></label>
-        <label><span>上下</span><input type="range" class="logo-y" data-logo="2" min="0" max="100" step="1" value="50"></label>
+        <label><span>SIZE</span><input type="range" class="logo-size" data-logo="2" min="3" max="120" step="1" value="30"></label>
+        <label><span>X</span><input type="range" class="logo-x" data-logo="2" min="0" max="100" step="1" value="50"></label>
+        <label><span>Y</span><input type="range" class="logo-y" data-logo="2" min="0" max="100" step="1" value="50"></label>
       </div>
     </div>
   </div>
@@ -1041,7 +1042,7 @@ if(!IS_OUTPUT){
       if(L.file){
         const drop=document.querySelector('.logo-drop[data-logo="'+i+'"]');
         const btn=document.querySelector('.logo-onoff[data-logo="'+i+'"]');
-        if(drop){drop.textContent='ロゴ'+(i+1)+'（読込済）';drop.classList.add('has');}
+        if(drop){drop.textContent='LOGO '+(i+1)+' ✓';drop.classList.add('has');}
         if(btn){btn.textContent=L.on?'ON':'OFF';btn.classList.toggle('on',L.on);}
         preview.setLogo({t:'logo',idx:i,file:L.file,type:L.type,size:L.size,x:L.x,y:L.y,on:L.on});
       }
