@@ -113,6 +113,22 @@
   #masterFader .mf-val{font-family:var(--bebas);font-size:15px;color:var(--green);min-width:2.2em;text-align:center;}
   #master{writing-mode:vertical-lr;direction:rtl;width:26px;flex:1;min-height:210px;accent-color:var(--green);cursor:pointer;}
   .master-fade{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none;z-index:6;transition:opacity .08s linear;}
+  /* ロゴオーバーレイ */
+  #logobar{display:flex;flex-direction:row;gap:12px;justify-content:center;padding:6px 12px 0;flex-wrap:wrap;}
+  .logoslot{background:var(--panel);border:0.5px solid var(--line);border-radius:4px;padding:8px;width:210px;display:flex;flex-direction:column;gap:6px;}
+  .logo-head{display:flex;justify-content:space-between;align-items:center;font-family:var(--bebas);font-size:13px;letter-spacing:0.1em;color:var(--dim);}
+  .logo-onoff{font-family:var(--bebas);font-size:12px;padding:2px 12px;border:0.5px solid var(--line2);border-radius:4px;background:transparent;color:var(--faint);cursor:pointer;letter-spacing:0.08em;}
+  .logo-onoff.on{color:var(--green);border-color:var(--green);}
+  .logo-drop{border:0.5px dashed var(--line2);border-radius:4px;padding:12px 6px;text-align:center;font-size:11px;color:var(--faint);cursor:pointer;background:var(--panel2);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+  .logo-drop.has{border-style:solid;border-color:var(--cyan);color:var(--cyan);}
+  .logo-drop.dragover{border-color:var(--green);color:var(--green);background:rgba(168,232,120,0.08);}
+  .logo-sliders{display:flex;flex-direction:column;gap:4px;}
+  .logo-sliders label{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--dim);}
+  .logo-sliders label span{min-width:2.6em;}
+  .logo-sliders input[type=range]{flex:1;accent-color:var(--cyan);height:14px;}
+  .logo-layer{position:absolute;pointer-events:none;z-index:5;display:none;}
+  .logo-layer.on{display:block;}
+  .logo-layer img,.logo-layer video{width:100%;height:100%;object-fit:contain;display:block;}
   .krow{display:flex;gap:7px;justify-content:flex-start;}
   .key{position:relative;flex:0 0 var(--kw);width:var(--kw);height:calc(var(--kw)*1.0);min-width:0;border:0.5px solid var(--line2);
     background:var(--panel2);border-radius:4px;display:flex;align-items:center;justify-content:center;
@@ -240,6 +256,9 @@
         <video id="pvB" muted playsinline></video>
         <div id="pvStrobe"></div>
         <div id="pvFx"></div>
+        <div class="logo-layer" data-logo="0"></div>
+        <div class="logo-layer" data-logo="1"></div>
+        <div class="logo-layer" data-logo="2"></div>
         <div class="master-fade"></div>
       </div>
     </div>
@@ -257,6 +276,36 @@
         <div class="preset" draggable="true" data-preset="zoom"><svg class="fxic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="7.5"/><circle cx="12" cy="12" r="12"/></svg><span>ZOOM</span></div>
       </div>
       <div class="src-set"><span class="lab">本数</span><input type="range" id="srcDiv" min="2" max="16" step="1" value="4"><span class="val" id="srcDivV">4本</span></div>
+    </div>
+  </div>
+
+  <div id="logobar">
+    <div class="logoslot" data-logo="0">
+      <div class="logo-head"><span>LOGO 1</span><button class="logo-onoff" data-logo="0">OFF</button></div>
+      <div class="logo-drop" data-logo="0">透過PNG / WebM をドロップ</div>
+      <div class="logo-sliders">
+        <label><span>大きさ</span><input type="range" class="logo-size" data-logo="0" min="3" max="120" step="1" value="30"></label>
+        <label><span>左右</span><input type="range" class="logo-x" data-logo="0" min="0" max="100" step="1" value="50"></label>
+        <label><span>上下</span><input type="range" class="logo-y" data-logo="0" min="0" max="100" step="1" value="50"></label>
+      </div>
+    </div>
+    <div class="logoslot" data-logo="1">
+      <div class="logo-head"><span>LOGO 2</span><button class="logo-onoff" data-logo="1">OFF</button></div>
+      <div class="logo-drop" data-logo="1">透過PNG / WebM をドロップ</div>
+      <div class="logo-sliders">
+        <label><span>大きさ</span><input type="range" class="logo-size" data-logo="1" min="3" max="120" step="1" value="30"></label>
+        <label><span>左右</span><input type="range" class="logo-x" data-logo="1" min="0" max="100" step="1" value="50"></label>
+        <label><span>上下</span><input type="range" class="logo-y" data-logo="1" min="0" max="100" step="1" value="50"></label>
+      </div>
+    </div>
+    <div class="logoslot" data-logo="2">
+      <div class="logo-head"><span>LOGO 3</span><button class="logo-onoff" data-logo="2">OFF</button></div>
+      <div class="logo-drop" data-logo="2">透過PNG / WebM をドロップ</div>
+      <div class="logo-sliders">
+        <label><span>大きさ</span><input type="range" class="logo-size" data-logo="2" min="3" max="120" step="1" value="30"></label>
+        <label><span>左右</span><input type="range" class="logo-x" data-logo="2" min="0" max="100" step="1" value="50"></label>
+        <label><span>上下</span><input type="range" class="logo-y" data-logo="2" min="0" max="100" step="1" value="50"></label>
+      </div>
     </div>
   </div>
 
@@ -280,6 +329,9 @@
   <video id="vB" playsinline></video>
   <div id="strobe"></div>
   <div id="fxOut" style="position:absolute;inset:0;pointer-events:none;"></div>
+  <div class="logo-layer" data-logo="0"></div>
+  <div class="logo-layer" data-logo="1"></div>
+  <div class="logo-layer" data-logo="2"></div>
   <div class="master-fade"></div>
   <button id="fsbtn" class="go">このモニターで全画面</button>
   <div id="outhint">VJ STUDIO — OUTPUT &nbsp;|&nbsp; この画面をサブモニターへ移動し「全画面」を押してください</div>
@@ -334,6 +386,26 @@ function createPlayer(vA, vB, strobe, fxEl, rootEl){
   const masterFade = rootEl ? rootEl.querySelector('.master-fade') : null;
   // マスターフェーダー：v=100→明るさ100%（マスク透明）、v=0→暗転（マスク真っ黒）。映像は裏で流れ続ける。
   function setMaster(v){ if(masterFade) masterFade.style.opacity = String(Math.max(0, Math.min(1, 1-(v/100)))); }
+  // ロゴオーバーレイ（×3）：File を各コンテキストで blob 化して重ねる
+  const logoLayers = rootEl ? [...rootEl.querySelectorAll('.logo-layer')] : [];
+  const logoUrls = [null,null,null];
+  function setLogo(d){
+    const el=logoLayers[d.idx]; if(!el) return;
+    if(d.remove){ el.innerHTML=''; el.classList.remove('on'); if(logoUrls[d.idx]){try{URL.revokeObjectURL(logoUrls[d.idx]);}catch(_){}logoUrls[d.idx]=null;} return; }
+    if(d.file){
+      if(logoUrls[d.idx]) try{URL.revokeObjectURL(logoUrls[d.idx]);}catch(_){}
+      const u=URL.createObjectURL(d.file); logoUrls[d.idx]=u;
+      el.innerHTML=''; const m=document.createElement(d.type==='video'?'video':'img');
+      if(d.type==='video'){ m.muted=true;m.loop=true;m.playsInline=true;m.autoplay=true; }
+      m.src=u; el.appendChild(m);
+      if(d.type==='video'){ const p=m.play(); if(p&&p.catch)p.catch(()=>{}); }
+    }
+    if(d.size!=null){ el.style.width=d.size+'%'; el.style.height=d.size+'%'; }
+    if(d.x!=null) el.style.left=d.x+'%';
+    if(d.y!=null) el.style.top=d.y+'%';
+    el.style.transform='translate(-50%,-50%)';
+    if(d.on!=null) el.classList.toggle('on', !!d.on);
+  }
   const objUrls=new Map();
   function setSrc(el,file){
     const old=objUrls.get(el);
@@ -456,8 +528,9 @@ function createPlayer(vA, vB, strobe, fxEl, rootEl){
     else if(m.t==='fadeout'){ stopStrobe(); stopFx(); fadeOutAll(m.sec||1.5); }
     else if(m.t==='blackout'){ blackout(); }
     else if(m.t==='master'){ setMaster(m.value); }
+    else if(m.t==='logo'){ setLogo(m); }
   }
-  return { handle, blackout, setMaster };
+  return { handle, blackout, setMaster, setLogo };
 }
 
 /* ============================================================
@@ -773,6 +846,7 @@ if(!IS_OUTPUT){
     renderTabs();
     rebuildKeys();
     syncSettingsUI();
+    await loadLogos();
     const need = Object.values(state.assignments).some(a=>a.needsLoad);
     if(need) flashDetail('前回のセットを読み込みました。再生するには「セット読込」を押してください。');
   }
@@ -940,6 +1014,70 @@ if(!IS_OUTPUT){
     });
   }
 
+  /* ---------- ロゴオーバーレイ（×3：ドロップ／サイズ／位置／オンオフ） ---------- */
+  state.logos = [0,1,2].map(()=>({file:null,type:null,size:30,x:50,y:50,on:false}));
+  function logoSend(idx, withFile){
+    const L=state.logos[idx];
+    const msg={t:'logo',idx:idx,size:L.size,x:L.x,y:L.y,on:L.on};
+    if(withFile){ msg.file=L.file; msg.type=L.type; }
+    preview.setLogo(msg);
+    if(state.outOpen) BC.postMessage(msg);
+  }
+  async function saveLogos(){
+    try{
+      await idbPut('settings','logos', state.logos.map(L=>({type:L.type,size:L.size,x:L.x,y:L.y,on:L.on})));
+      for(let i=0;i<3;i++){ if(state.logos[i].file) await idbPut('blobs','logo:'+i,state.logos[i].file); }
+    }catch(_){}
+  }
+  async function loadLogos(){
+    if(!state.logos) return;
+    const meta=await idbGet('settings','logos').catch(()=>null);
+    for(let i=0;i<3;i++){
+      if(meta&&meta[i]) Object.assign(state.logos[i],meta[i]);
+      const lf=await idbGet('blobs','logo:'+i).catch(()=>null);
+      if(lf) state.logos[i].file=lf;
+      const L=state.logos[i];
+      ['size','x','y'].forEach(p=>{const sl=document.querySelector('.logo-'+p+'[data-logo="'+i+'"]');if(sl)sl.value=L[p];});
+      if(L.file){
+        const drop=document.querySelector('.logo-drop[data-logo="'+i+'"]');
+        const btn=document.querySelector('.logo-onoff[data-logo="'+i+'"]');
+        if(drop){drop.textContent='ロゴ'+(i+1)+'（読込済）';drop.classList.add('has');}
+        if(btn){btn.textContent=L.on?'ON':'OFF';btn.classList.toggle('on',L.on);}
+        preview.setLogo({t:'logo',idx:i,file:L.file,type:L.type,size:L.size,x:L.x,y:L.y,on:L.on});
+      }
+    }
+  }
+  document.querySelectorAll('.logo-drop').forEach(drop=>{
+    const idx=+drop.dataset.logo;
+    drop.addEventListener('dragover',e=>{e.preventDefault();drop.classList.add('dragover');});
+    drop.addEventListener('dragleave',()=>drop.classList.remove('dragover'));
+    drop.addEventListener('drop',e=>{
+      e.preventDefault();drop.classList.remove('dragover');
+      const f=e.dataTransfer.files&&e.dataTransfer.files[0]; if(!f) return;
+      const isVid=/^video\//.test(f.type)||/\.(webm|mp4|mov|m4v)$/i.test(f.name);
+      const isImg=/^image\//.test(f.type)||/\.(png|gif|webp|jpe?g|svg)$/i.test(f.name);
+      if(!isVid&&!isImg){ flashDetail('画像（PNG等）か動画（WebM等）をドロップしてください'); return; }
+      const L=state.logos[idx]; L.file=f; L.type=isVid?'video':'image'; L.on=true;
+      drop.textContent=f.name; drop.classList.add('has');
+      const btn=document.querySelector('.logo-onoff[data-logo="'+idx+'"]'); if(btn){btn.textContent='ON';btn.classList.add('on');}
+      logoSend(idx,true); saveLogos();
+    });
+  });
+  document.querySelectorAll('.logo-onoff').forEach(btn=>{
+    const idx=+btn.dataset.logo;
+    btn.addEventListener('click',()=>{
+      const L=state.logos[idx]; if(!L.file){ flashDetail('先にこの枠へロゴをドロップしてください'); return; }
+      L.on=!L.on; btn.textContent=L.on?'ON':'OFF'; btn.classList.toggle('on',L.on);
+      logoSend(idx); saveLogos();
+    });
+  });
+  ['size','x','y'].forEach(prop=>{
+    document.querySelectorAll('.logo-'+prop).forEach(sl=>{
+      const idx=+sl.dataset.logo;
+      sl.addEventListener('input',()=>{ state.logos[idx][prop]=+sl.value; logoSend(idx); saveLogos(); });
+    });
+  });
+
   /* ---------- output window ---------- */
   function openOutput(){
     if(outWin && !outWin.closed){ outWin.focus(); setOut(true); return; }   // 既に開いていれば前面化のみ（二重ウィンドウ防止）
@@ -948,7 +1086,7 @@ if(!IS_OUTPUT){
     if(!outWin){ flashDetail('ポップアップがブロックされました。アドレスバー右の「ポップアップ」を許可してください。'); return; }
     setOut(true);
     // 開いた出力に現在のマスター値を反映（ロード待ちのため少し遅延）
-    { const mv=masterEl?+masterEl.value:100; setTimeout(()=>{ if(state.outOpen) BC.postMessage({t:'master',value:mv}); }, 900); }
+    { const mv=masterEl?+masterEl.value:100; setTimeout(()=>{ if(!state.outOpen) return; BC.postMessage({t:'master',value:mv}); for(let i=0;i<3;i++){ const L=state.logos[i]; if(L&&L.file){ BC.postMessage({t:'logo',idx:i,file:L.file,type:L.type,size:L.size,x:L.x,y:L.y,on:L.on}); } } }, 900); }
     // 位置・サイズをサブモニターへ（権限があればベストエフォート。失敗してもブロックには影響しない）
     if('getScreenDetails' in window){
       window.getScreenDetails().then(sd=>{
