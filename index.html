@@ -115,7 +115,8 @@
   .master-fade{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none;z-index:6;transition:opacity .08s linear;}
   /* ロゴオーバーレイ */
   #logobar{flex:0 0 248px;min-width:0;display:flex;flex-direction:column;gap:7px;overflow-y:auto;}
-  .logoslot{background:var(--panel);border:0.5px solid var(--line);border-radius:4px;padding:6px 9px;flex:1 0 auto;min-height:0;display:flex;flex-direction:column;gap:3px;justify-content:flex-start;overflow:visible;}
+  .logoslot{background:var(--panel);border:0.5px solid var(--line);border-radius:4px;padding:6px 9px;flex:1 0 auto;min-height:0;display:flex;flex-direction:column;gap:3px;justify-content:flex-start;overflow:visible;cursor:pointer;}
+  .logoslot.selected{border-color:var(--cyan);box-shadow:inset 0 0 0 0.5px var(--cyan);}
   .logo-head{display:flex;justify-content:space-between;align-items:center;font-family:var(--bebas);font-size:13px;letter-spacing:0.1em;color:var(--dim);}
   .logo-onoff{font-family:var(--bebas);font-size:12px;padding:2px 12px;border:0.5px solid var(--line2);border-radius:4px;background:transparent;color:var(--faint);cursor:pointer;letter-spacing:0.08em;}
   .logo-onoff.on{color:var(--green);border-color:var(--green);}
@@ -564,6 +565,7 @@ if(!IS_OUTPUT){
     xfadeSec:0.6,
     foSec:1.5,
     selected:null,
+    selectedLogo:null,   // クリックで選択中のロゴ枠（0/1/2）。Shiftキーでこの枠をオン/オフ
     outOpen:false,
   };
   function bankKey(code){ return 'b'+state.banks[state.currentBank].id+':'+code; }   // 保存キーにバンクID
@@ -989,6 +991,8 @@ if(!IS_OUTPUT){
       return;
     }
     if(e.repeat) return;
+    if(e.code==='Tab'){ e.preventDefault(); const n=state.banks.length; if(n>1) switchBank((state.currentBank+1)%n); return; }   // Tab＝次のタブへ（一周）
+    if(e.code==='ShiftLeft'||e.code==='ShiftRight'){ if(state.selectedLogo!=null){ e.preventDefault(); toggleLogo(state.selectedLogo); } return; }   // Shift＝選択中ロゴのオン/オフ
     if(state.assignments[e.code]){ e.preventDefault(); activeHolds.add(e.code); triggerKey(e.code); }
   });
   window.addEventListener('keyup',e=>{
@@ -1064,13 +1068,24 @@ if(!IS_OUTPUT){
       logoSend(idx,true); saveLogos();
     });
   });
+  function toggleLogo(idx){
+    const L=state.logos[idx]; if(!L.file){ flashDetail('先にこの枠へロゴをドロップしてください'); return; }
+    L.on=!L.on;
+    const btn=document.querySelector('.logo-onoff[data-logo="'+idx+'"]');
+    if(btn){ btn.textContent=L.on?'ON':'OFF'; btn.classList.toggle('on',L.on); }
+    logoSend(idx); saveLogos();
+  }
+  function selectLogo(idx){
+    state.selectedLogo=idx;
+    document.querySelectorAll('.logoslot').forEach(s=>s.classList.toggle('selected', +s.dataset.logo===idx));
+    if(document.activeElement&&document.activeElement!==document.body&&document.activeElement.blur) document.activeElement.blur();
+  }
+  document.querySelectorAll('.logoslot').forEach(slot=>{
+    slot.addEventListener('click',()=>selectLogo(+slot.dataset.logo));
+  });
   document.querySelectorAll('.logo-onoff').forEach(btn=>{
     const idx=+btn.dataset.logo;
-    btn.addEventListener('click',()=>{
-      const L=state.logos[idx]; if(!L.file){ flashDetail('先にこの枠へロゴをドロップしてください'); return; }
-      L.on=!L.on; btn.textContent=L.on?'ON':'OFF'; btn.classList.toggle('on',L.on);
-      logoSend(idx); saveLogos();
-    });
+    btn.addEventListener('click',()=>toggleLogo(idx));
   });
   ['size','x','y'].forEach(prop=>{
     document.querySelectorAll('.logo-'+prop).forEach(sl=>{
