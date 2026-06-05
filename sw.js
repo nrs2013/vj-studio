@@ -1,5 +1,5 @@
-// VJ STUDIO Service Worker — オフライン対応（静的アセットのみキャッシュ）
-const CACHE = 'vj-studio-v1';
+// VJ STUDIO Service Worker — HTMLは常に最新(network-first)、素材はcache-first(オフライン対応)
+const CACHE = 'vj-studio-v2';
 const ASSETS = [
   './',
   './index.html',
@@ -28,10 +28,23 @@ self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
   let u;
   try { u = new URL(e.request.url); } catch (_) { return; }
-  // blob:（動画）・data:・他オリジンは触らない＝通常どおり再生
-  if (u.protocol !== 'https:' && u.protocol !== 'http:') return;
+  if (u.protocol !== 'https:' && u.protocol !== 'http:') return; // blob:(動画)等は触らない
   if (u.origin !== location.origin) return;
-  // 静的アセットは cache-first（オフラインでも開ける）
+
+  // HTML（index.html / ナビゲーション）は network-first＝常に最新コードを取得
+  const isHTML = e.request.mode === 'navigate' || u.pathname.endsWith('/') || u.pathname.endsWith('.html');
+  if (isHTML) {
+    e.respondWith(
+      fetch(e.request).then(resp => {
+        const cp = resp.clone();
+        caches.open(CACHE).then(c => c.put(e.request, cp));
+        return resp;
+      }).catch(() => caches.match(e.request).then(r => r || caches.match('./index.html')))
+    );
+    return;
+  }
+
+  // それ以外（fonts/icon等）は cache-first＝オフラインでも開ける
   e.respondWith(
     caches.match(e.request).then(r => r || fetch(e.request).then(resp => {
       if (resp && resp.status === 200 && resp.type === 'basic') {
@@ -39,6 +52,6 @@ self.addEventListener('fetch', e => {
         caches.open(CACHE).then(c => c.put(e.request, cp));
       }
       return resp;
-    }).catch(() => caches.match('./index.html')))
+    }))
   );
 });
