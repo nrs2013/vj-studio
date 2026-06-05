@@ -114,15 +114,15 @@
   #master{writing-mode:vertical-lr;direction:rtl;width:26px;flex:1;min-height:210px;accent-color:var(--green);cursor:pointer;}
   .master-fade{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none;z-index:6;transition:opacity .08s linear;}
   /* ロゴオーバーレイ */
-  #logobar{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:8px;}
-  .logoslot{background:var(--panel);border:0.5px solid var(--line);border-radius:4px;padding:7px 10px;flex:1 1 0;min-height:0;display:flex;flex-direction:column;gap:4px;justify-content:center;}
+  #logobar{flex:0 0 248px;min-width:0;display:flex;flex-direction:column;gap:7px;overflow-y:auto;}
+  .logoslot{background:var(--panel);border:0.5px solid var(--line);border-radius:4px;padding:6px 9px;flex:1 0 auto;min-height:0;display:flex;flex-direction:column;gap:3px;justify-content:flex-start;overflow:visible;}
   .logo-head{display:flex;justify-content:space-between;align-items:center;font-family:var(--bebas);font-size:13px;letter-spacing:0.1em;color:var(--dim);}
   .logo-onoff{font-family:var(--bebas);font-size:12px;padding:2px 12px;border:0.5px solid var(--line2);border-radius:4px;background:transparent;color:var(--faint);cursor:pointer;letter-spacing:0.08em;}
   .logo-onoff.on{color:var(--green);border-color:var(--green);}
   .logo-drop{border:0.5px dashed var(--line2);border-radius:4px;padding:12px 6px;text-align:center;font-size:11px;color:var(--faint);cursor:pointer;background:var(--panel2);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
   .logo-drop.has{border-style:solid;border-color:var(--cyan);color:var(--cyan);}
   .logo-drop.dragover{border-color:var(--green);color:var(--green);background:rgba(168,232,120,0.08);}
-  .logo-sliders{display:flex;flex-direction:column;gap:5px;}
+  .logo-sliders{display:flex;flex-direction:column;gap:3px;}
   .logo-sliders label{display:flex;align-items:center;gap:8px;font-family:var(--bebas);font-size:12px;letter-spacing:0.12em;color:var(--dim);}
   .logo-sliders label span{min-width:1.8em;color:var(--faint);}
   .logo-sliders input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:2px;background:var(--line2);border-radius:2px;cursor:pointer;}
