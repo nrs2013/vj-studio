@@ -588,7 +588,11 @@ if(!IS_OUTPUT){
   }
   function addBank(){
     const id=Math.max(0,...state.banks.map(b=>b.id))+1;
-    state.banks.push({id,name:'BANK '+id,assignments:{}});
+    const nb={id,name:'BANK '+id,assignments:{}};
+    // エフェクトは全タブ共通：既存タブのエフェクトを新タブにもコピー＆保存
+    const cur=state.banks[state.currentBank];
+    if(cur){ for(const [code,a] of Object.entries(cur.assignments)){ if(a && a.kind!=='video'){ nb.assignments[code]=Object.assign({},a); idbPut('meta','b'+id+':'+code,fxMeta(a)); } } }
+    state.banks.push(nb);
     state.currentBank=state.banks.length-1; state.selected=null;
     renderTabs(); rebuildKeys(); renderDetail(); saveBanks();
   }
@@ -647,9 +651,9 @@ if(!IS_OUTPUT){
       else if(preset==='glitch') a={kind:'glitch',interval:sp};
       else if(preset==='zoom') a={kind:'zoom',interval:sp};
       else return;
-      state.assignments[code]=a;
+      setFxAllBanks(code,a);              // エフェクトは全タブ共通
       renderKey(code); selectKey(code);
-      persist(code);
+      await persistFxAllBanks(code,a);
       return;
     }
     // 2) file ?
@@ -701,6 +705,12 @@ if(!IS_OUTPUT){
       setTimeout(()=>fin(''),4000);
     });
   }
+
+  /* ---------- エフェクトは全タブ共通（置く/消す/タブ追加で全バンクに反映） ---------- */
+  function fxMeta(a){ return {kind:a.kind,name:a.name||'',thumb:a.thumb||'',loop:!!a.loop,color:a.color||null,interval:a.interval||80,divisions:a.divisions||null,direction:a.direction||null}; }
+  function setFxAllBanks(code,a){ for(const b of state.banks){ b.assignments[code]=Object.assign({},a); } }
+  async function persistFxAllBanks(code,a){ const m=fxMeta(a); for(const b of state.banks){ await idbPut('meta','b'+b.id+':'+code,m); } saveBanks(); }
+  async function delFxAllBanks(code){ for(const b of state.banks){ delete b.assignments[code]; await idbDel('meta','b'+b.id+':'+code); await idbDel('handles','b'+b.id+':'+code); } }
 
   /* ---------- persistence ---------- */
   async function persist(code){
@@ -816,8 +826,12 @@ if(!IS_OUTPUT){
   function clearKey(code){
     const a=state.assignments[code];
     if(a&&a.url) URL.revokeObjectURL(a.url);
-    delete state.assignments[code];
-    idbDel('meta',bankKey(code)); idbDel('handles',bankKey(code));
+    if(a && a.kind!=='video'){           // エフェクトは全タブから削除
+      delFxAllBanks(code);
+    }else{
+      delete state.assignments[code];
+      idbDel('meta',bankKey(code)); idbDel('handles',bankKey(code));
+    }
     renderKey(code);
     if(state.selected===code) renderDetail();
   }
