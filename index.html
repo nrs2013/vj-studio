@@ -450,7 +450,10 @@ if(IS_OUTPUT){
   document.title = 'VJ STUDIO — OUTPUT';
   const out = document.getElementById('output');
   const player = createPlayer(document.getElementById('vA'), document.getElementById('vB'), document.getElementById('strobe'), document.getElementById('fxOut'), out);
-  document.getElementById('fsbtn').onclick = ()=>{ out.requestFullscreen && out.requestFullscreen().catch(()=>{}); };
+  const goFull = ()=>{ if(out.requestFullscreen){ out.requestFullscreen().catch(()=>{}); } else if(out.webkitRequestFullscreen){ out.webkitRequestFullscreen(); } };
+  document.getElementById('fsbtn').onclick = goFull;
+  out.ondblclick = goFull;            // ★ ダブルクリックでも全画面（本番ですぐ全画面化）
+  out.style.cursor = 'none';          // 出力画面はカーソルを隠す（本番でカーソルが映らない）
   BC.onmessage = (e)=>{ const m=e.data; if(m.t==='ping'){ BC.postMessage({t:'pong'}); return; } player.handle(m); };
   BC.postMessage({t:'pong'});
   window.addEventListener('beforeunload',()=>{ try{player.blackout();}catch(e){} BC.postMessage({t:'outclosed'}); });
