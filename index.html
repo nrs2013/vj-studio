@@ -106,7 +106,13 @@
 
   /* ===== KEYBOARD = clip grid（Mac配置・キー大きさ統一） ===== */
   #stage{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:8px 12px;overflow:auto;}
-  #keyboard{--kw:clamp(38px,calc((100vw - 120px) / 18.5),66px);display:flex;flex-direction:column;gap:6px;align-items:flex-start;width:fit-content;margin:0 auto;}
+  #keyboard{--kw:clamp(38px,calc((100vw - 120px) / 18.5),66px);display:flex;flex-direction:column;gap:6px;align-items:flex-start;width:fit-content;}
+  #stage{display:flex;flex-direction:row;align-items:stretch;justify-content:center;gap:18px;}
+  #masterFader{display:flex;flex-direction:column;align-items:center;gap:8px;padding:6px 2px;}
+  #masterFader .mf-label{font-family:var(--bebas);font-size:13px;letter-spacing:0.12em;color:var(--dim);}
+  #masterFader .mf-val{font-family:var(--bebas);font-size:15px;color:var(--green);min-width:2.2em;text-align:center;}
+  #master{writing-mode:vertical-lr;direction:rtl;width:26px;flex:1;min-height:210px;accent-color:var(--green);cursor:pointer;}
+  .master-fade{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none;z-index:6;transition:opacity .08s linear;}
   .krow{display:flex;gap:7px;justify-content:flex-start;}
   .key{position:relative;flex:0 0 var(--kw);width:var(--kw);height:calc(var(--kw)*1.0);min-width:0;border:0.5px solid var(--line2);
     background:var(--panel2);border-radius:4px;display:flex;align-items:center;justify-content:center;
@@ -234,6 +240,7 @@
         <video id="pvB" muted playsinline></video>
         <div id="pvStrobe"></div>
         <div id="pvFx"></div>
+        <div class="master-fade"></div>
       </div>
     </div>
     <div id="sources">
@@ -255,6 +262,11 @@
 
   <div id="stage">
     <div id="keyboard"></div>
+    <div id="masterFader" title="マスターフェーダー（全体の明るさ）">
+      <div class="mf-label">MASTER</div>
+      <input type="range" id="master" min="0" max="100" value="100" step="1" orient="vertical">
+      <div class="mf-val" id="masterVal">100</div>
+    </div>
   </div>
 
   <div id="detail">
@@ -268,6 +280,7 @@
   <video id="vB" playsinline></video>
   <div id="strobe"></div>
   <div id="fxOut" style="position:absolute;inset:0;pointer-events:none;"></div>
+  <div class="master-fade"></div>
   <button id="fsbtn" class="go">このモニターで全画面</button>
   <div id="outhint">VJ STUDIO — OUTPUT &nbsp;|&nbsp; この画面をサブモニターへ移動し「全画面」を押してください</div>
 </div>
@@ -318,6 +331,9 @@ function idbAll(store){return new Promise((res,rej)=>{const t=db.transaction(sto
    ============================================================ */
 function createPlayer(vA, vB, strobe, fxEl, rootEl){
   let activeEl=vA, idleEl=vB, strobeTimer=null, strobeKey=null, fxTimer=null, fxRaf=null, fxKind=null, playGen=0;
+  const masterFade = rootEl ? rootEl.querySelector('.master-fade') : null;
+  // マスターフェーダー：v=100→明るさ100%（マスク透明）、v=0→暗転（マスク真っ黒）。映像は裏で流れ続ける。
+  function setMaster(v){ if(masterFade) masterFade.style.opacity = String(Math.max(0, Math.min(1, 1-(v/100)))); }
   const objUrls=new Map();
   function setSrc(el,file){
     const old=objUrls.get(el);
@@ -439,8 +455,9 @@ function createPlayer(vA, vB, strobe, fxEl, rootEl){
     }
     else if(m.t==='fadeout'){ stopStrobe(); stopFx(); fadeOutAll(m.sec||1.5); }
     else if(m.t==='blackout'){ blackout(); }
+    else if(m.t==='master'){ setMaster(m.value); }
   }
-  return { handle, blackout };
+  return { handle, blackout, setMaster };
 }
 
 /* ============================================================
@@ -906,6 +923,17 @@ if(!IS_OUTPUT){
   window.addEventListener('blur', panicRelease);
   document.addEventListener('visibilitychange', ()=>{ if(document.hidden) panicRelease(); });
 
+  /* ---------- マスターフェーダー（全体の明るさ：手元プレビュー＋出力に即反映） ---------- */
+  const masterEl=document.getElementById('master'), masterValEl=document.getElementById('masterVal');
+  if(masterEl){
+    masterEl.addEventListener('input',()=>{
+      const v=+masterEl.value;
+      if(masterValEl) masterValEl.textContent=v;
+      preview.setMaster(v);
+      if(state.outOpen) BC.postMessage({t:'master',value:v});
+    });
+  }
+
   /* ---------- output window ---------- */
   function openOutput(){
     if(outWin && !outWin.closed){ outWin.focus(); setOut(true); return; }   // 既に開いていれば前面化のみ（二重ウィンドウ防止）
@@ -913,6 +941,8 @@ if(!IS_OUTPUT){
     outWin=window.open('?role=output','vjOutput','width=1280,height=720,menubar=no,toolbar=no,location=no,status=no');
     if(!outWin){ flashDetail('ポップアップがブロックされました。アドレスバー右の「ポップアップ」を許可してください。'); return; }
     setOut(true);
+    // 開いた出力に現在のマスター値を反映（ロード待ちのため少し遅延）
+    { const mv=masterEl?+masterEl.value:100; setTimeout(()=>{ if(state.outOpen) BC.postMessage({t:'master',value:mv}); }, 900); }
     // 位置・サイズをサブモニターへ（権限があればベストエフォート。失敗してもブロックには影響しない）
     if('getScreenDetails' in window){
       window.getScreenDetails().then(sd=>{
