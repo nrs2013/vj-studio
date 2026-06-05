@@ -114,8 +114,8 @@
   #master{writing-mode:vertical-lr;direction:rtl;width:26px;flex:1;min-height:210px;accent-color:var(--green);cursor:pointer;}
   .master-fade{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none;z-index:6;transition:opacity .08s linear;}
   /* ロゴオーバーレイ */
-  #logobar{display:flex;flex-direction:row;gap:12px;justify-content:center;padding:6px 12px 0;flex-wrap:wrap;}
-  .logoslot{background:var(--panel);border:0.5px solid var(--line);border-radius:4px;padding:8px;width:210px;display:flex;flex-direction:column;gap:6px;}
+  #logobar{flex:1 1 0;min-width:0;display:flex;flex-direction:column;gap:8px;}
+  .logoslot{background:var(--panel);border:0.5px solid var(--line);border-radius:4px;padding:7px 10px;flex:1 1 0;min-height:0;display:flex;flex-direction:column;gap:4px;justify-content:center;}
   .logo-head{display:flex;justify-content:space-between;align-items:center;font-family:var(--bebas);font-size:13px;letter-spacing:0.1em;color:var(--dim);}
   .logo-onoff{font-family:var(--bebas);font-size:12px;padding:2px 12px;border:0.5px solid var(--line2);border-radius:4px;background:transparent;color:var(--faint);cursor:pointer;letter-spacing:0.08em;}
   .logo-onoff.on{color:var(--green);border-color:var(--green);}
@@ -263,6 +263,35 @@
         <div class="master-fade"></div>
       </div>
     </div>
+    <div id="logobar">
+      <div class="logoslot" data-logo="0">
+        <div class="logo-head"><span>LOGO 1</span><button class="logo-onoff" data-logo="0">OFF</button></div>
+        <div class="logo-drop" data-logo="0">DROP PNG / WebM</div>
+        <div class="logo-sliders">
+          <label><span>SIZE</span><input type="range" class="logo-size" data-logo="0" min="3" max="120" step="1" value="30"></label>
+          <label><span>X</span><input type="range" class="logo-x" data-logo="0" min="0" max="100" step="1" value="50"></label>
+          <label><span>Y</span><input type="range" class="logo-y" data-logo="0" min="0" max="100" step="1" value="50"></label>
+        </div>
+      </div>
+      <div class="logoslot" data-logo="1">
+        <div class="logo-head"><span>LOGO 2</span><button class="logo-onoff" data-logo="1">OFF</button></div>
+        <div class="logo-drop" data-logo="1">DROP PNG / WebM</div>
+        <div class="logo-sliders">
+          <label><span>SIZE</span><input type="range" class="logo-size" data-logo="1" min="3" max="120" step="1" value="30"></label>
+          <label><span>X</span><input type="range" class="logo-x" data-logo="1" min="0" max="100" step="1" value="50"></label>
+          <label><span>Y</span><input type="range" class="logo-y" data-logo="1" min="0" max="100" step="1" value="50"></label>
+        </div>
+      </div>
+      <div class="logoslot" data-logo="2">
+        <div class="logo-head"><span>LOGO 3</span><button class="logo-onoff" data-logo="2">OFF</button></div>
+        <div class="logo-drop" data-logo="2">DROP PNG / WebM</div>
+        <div class="logo-sliders">
+          <label><span>SIZE</span><input type="range" class="logo-size" data-logo="2" min="3" max="120" step="1" value="30"></label>
+          <label><span>X</span><input type="range" class="logo-x" data-logo="2" min="0" max="100" step="1" value="50"></label>
+          <label><span>Y</span><input type="range" class="logo-y" data-logo="2" min="0" max="100" step="1" value="50"></label>
+        </div>
+      </div>
+    </div>
     <div id="sources">
       <div class="src-title">EFFECTS</div>
       <div class="palette">
@@ -277,36 +306,6 @@
         <div class="preset" draggable="true" data-preset="zoom"><svg class="fxic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="7.5"/><circle cx="12" cy="12" r="12"/></svg><span>ZOOM</span></div>
       </div>
       <div class="src-set"><span class="lab">本数</span><input type="range" id="srcDiv" min="2" max="16" step="1" value="4"><span class="val" id="srcDivV">4本</span></div>
-    </div>
-  </div>
-
-  <div id="logobar">
-    <div class="logoslot" data-logo="0">
-      <div class="logo-head"><span>LOGO 1</span><button class="logo-onoff" data-logo="0">OFF</button></div>
-      <div class="logo-drop" data-logo="0">DROP PNG / WebM</div>
-      <div class="logo-sliders">
-        <label><span>SIZE</span><input type="range" class="logo-size" data-logo="0" min="3" max="120" step="1" value="30"></label>
-        <label><span>X</span><input type="range" class="logo-x" data-logo="0" min="0" max="100" step="1" value="50"></label>
-        <label><span>Y</span><input type="range" class="logo-y" data-logo="0" min="0" max="100" step="1" value="50"></label>
-      </div>
-    </div>
-    <div class="logoslot" data-logo="1">
-      <div class="logo-head"><span>LOGO 2</span><button class="logo-onoff" data-logo="1">OFF</button></div>
-      <div class="logo-drop" data-logo="1">DROP PNG / WebM</div>
-      <div class="logo-sliders">
-        <label><span>SIZE</span><input type="range" class="logo-size" data-logo="1" min="3" max="120" step="1" value="30"></label>
-        <label><span>X</span><input type="range" class="logo-x" data-logo="1" min="0" max="100" step="1" value="50"></label>
-        <label><span>Y</span><input type="range" class="logo-y" data-logo="1" min="0" max="100" step="1" value="50"></label>
-      </div>
-    </div>
-    <div class="logoslot" data-logo="2">
-      <div class="logo-head"><span>LOGO 3</span><button class="logo-onoff" data-logo="2">OFF</button></div>
-      <div class="logo-drop" data-logo="2">DROP PNG / WebM</div>
-      <div class="logo-sliders">
-        <label><span>SIZE</span><input type="range" class="logo-size" data-logo="2" min="3" max="120" step="1" value="30"></label>
-        <label><span>X</span><input type="range" class="logo-x" data-logo="2" min="0" max="100" step="1" value="50"></label>
-        <label><span>Y</span><input type="range" class="logo-y" data-logo="2" min="0" max="100" step="1" value="50"></label>
-      </div>
     </div>
   </div>
 
