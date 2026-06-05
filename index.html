@@ -978,6 +978,7 @@ if(!IS_OUTPUT){
 
   /* ---------- physical keyboard ---------- */
   window.addEventListener('keydown',e=>{
+    if(e.metaKey||e.ctrlKey||e.altKey) return;   // Cmd/Ctrl/Option＋キーはブラウザのショートカット（リロード・検証等）。アプリは奪わない
     const tag=(e.target.tagName||'').toLowerCase();
     if(tag==='input'||tag==='textarea') return;
     if(e.code==='Escape'){ e.preventDefault(); fadeOut(); return; }
