@@ -907,6 +907,12 @@ if(!IS_OUTPUT){
     const tag=(e.target.tagName||'').toLowerCase();
     if(tag==='input'||tag==='textarea') return;
     if(e.code==='Escape'){ e.preventDefault(); fadeOut(); return; }
+    if(e.code==='ArrowUp'||e.code==='ArrowDown'){   // ↑↓でマスターフェーダーを上下（押しっぱなしで連続）
+      e.preventDefault();
+      const mEl=document.getElementById('master');
+      if(mEl){ mEl.value=Math.max(0,Math.min(100,(+mEl.value)+(e.code==='ArrowUp'?3:-3))); mEl.dispatchEvent(new Event('input')); }
+      return;
+    }
     if(e.repeat) return;
     if(state.assignments[e.code]){ e.preventDefault(); activeHolds.add(e.code); triggerKey(e.code); }
   });
