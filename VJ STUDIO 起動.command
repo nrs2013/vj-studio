@@ -1,5 +1,5 @@
 #!/bin/bash
-cd "/Users/nomurayuuki/Documents/vj-studio"
+cd "$(dirname "$0")"
 PORT=7659
 URL="http://localhost:$PORT/"
 open_chrome(){ open -a "Google Chrome" "$URL" 2>/dev/null || open "$URL"; }

@@ -2,3 +2,11 @@
 node_modules/
 *.log
 _test*.mp4
+
+# 引き継ぎ書・公演機密（2026-07-25 追加・公開リポ）
+*引き継ぎ*.md
+*引継ぎ*.md
+*HANDOVER*.md
+*.xlsx
+*セトリ*
+*進行表*
